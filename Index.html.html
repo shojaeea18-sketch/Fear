@@ -1,0 +1,1605 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>نبرد فضایی: ترس بجا یا نابجا</title>
+<link rel="preconnect" href="https://my.uupload.ir">
+<link rel="dns-prefetch" href="https://my.uupload.ir">
+<style>
+@font-face{font-family:'DimaShekasteh';src:url('https://cdn.jsdelivr.net/gh/rokhafrooz1960-debug/my_fonts/Dima%20Shekasteh%202.ttf') format('truetype');font-display:swap}
+@font-face{font-family:'Danstevis';src:url('https://cdn.jsdelivr.net/gh/rokhafrooz1960-debug/my_fonts/danstevis.otf') format('opentype');font-display:swap}
+@font-face{font-family:'BTitr';src:url('https://cdn.jsdelivr.net/gh/rokhafrooz1960-debug/my_fonts/B%20Titr%20Bold_0.ttf') format('truetype');font-display:swap}
+@font-face{font-family:'BKoodak';src:url('https://cdn.jsdelivr.net/gh/rokhafrooz1960-debug/my_fonts/B%20Koodak%20Bold_0.ttf') format('truetype');font-display:swap}
+@font-face{font-family:'BMitra';src:url('https://cdn.jsdelivr.net/gh/rokhafrooz1960-debug/my_fonts/B%20Mitra%20Bold_0.ttf') format('truetype');font-display:swap}
+@font-face{font-family:'BNazanin';src:url('https://cdn.jsdelivr.net/gh/rokhafrooz1960-debug/my_fonts/B-NAZANIN.TTF') format('truetype');font-display:swap}
+@font-face{font-family:'MjFaraz';src:url('https://cdn.jsdelivr.net/gh/rokhafrooz1960-debug/my_fonts/Mj_Faraz_0.TTF') format('truetype');font-display:swap}
+
+:root{--primary:#00E5FF;--secondary:#D500F9;--success:#00E676;--warning:#FFEA00;--danger:#FF1744;--dark:#0b0c10;--panel-bg:rgba(15,20,30,0.95)}
+*{margin:0;padding:0;box-sizing:border-box;user-select:none;font-family:'BKoodak',Tahoma,Arial,sans-serif}
+body{background:url('https://abrehamrahi.ir/o/public/pIf5nCun/') center/cover no-repeat fixed #0b0c10;overflow:hidden;touch-action:none;color:#fff;position:fixed;top:0;left:0;right:0;bottom:0;width:100vw;height:100dvh}
+#gameCanvas{display:block;margin:0 auto;z-index:1;position:relative;width:100%;max-width:600px;height:100%}
+.action-btn{width:38px;height:38px;border-radius:12px;border:1px solid rgba(255,255,255,0.2);background:rgba(20,30,40,0.9);color:#fff;display:flex;justify-content:center;align-items:center;font-size:18px;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,0.3);transition:all 0.3s;user-select:none}
+.action-btn:hover{transform:translateY(-3px) scale(1.05);border-color:#00E5FF;box-shadow:0 6px 15px rgba(0,229,255,0.4)}
+.hud{position:absolute;top:10px;width:100%;max-width:600px;left:50%;transform:translateX(-50%);display:flex;justify-content:space-between;padding:0 10px;pointer-events:none;z-index:10;flex-wrap:wrap;gap:5px;padding-left:60px}
+.hud-box{background:rgba(15,20,30,0.95);padding:6px 10px;border-radius:12px;border:1px solid var(--primary);box-shadow:0 0 10px rgba(0,229,255,0.3);font-weight:bold;color:var(--primary);font-size:clamp(0.7rem,2.5vw,0.9rem);pointer-events:auto;font-family:'BTitr',Tahoma;line-height:1.5;direction:rtl;text-align:right}
+.hud-box span{color:#fff;font-family:'BKoodak',Tahoma}
+.level-banner{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:linear-gradient(145deg,#6200EA,#D500F9);padding:5px 20px;border-radius:20px;font-size:clamp(1rem,4vw,1.3rem);font-family:'BTitr';color:#fff;border:2px solid #FFEA00;box-shadow:0 0 15px rgba(213,0,249,0.8);z-index:20;text-shadow:1px 1px 2px rgba(0,0,0,0.8);transition:opacity 0.5s,transform 0.3s;white-space:nowrap;opacity:0;pointer-events:none}
+.controls{position:absolute;bottom:max(35px,5vh);padding-bottom:env(safe-area-inset-bottom,10px);width:100%;max-width:600px;left:50%;transform:translateX(-50%);display:flex;justify-content:space-evenly;align-items:center;z-index:100;direction:ltr}
+.btn{background:linear-gradient(145deg,#00B0FF,#2962FF);color:white;border:2px solid #82B1FF;width:clamp(50px,14vw,65px);height:clamp(50px,14vw,65px);border-radius:50%;font-size:clamp(1.2rem,5vw,1.8rem);box-shadow:0 0 15px rgba(41,98,255,0.8),inset 0 0 10px rgba(255,255,255,0.4);cursor:pointer;display:flex;justify-content:center;align-items:center;pointer-events:auto;font-family:'BTitr'}
+.btn:active{transform:translateY(5px) scale(0.95);box-shadow:0 0 5px rgba(41,98,255,0.8)}
+.btn-shoot{background:linear-gradient(145deg,#FF1744,#D50000);border:2px solid #FF8A80;box-shadow:0 0 20px rgba(213,0,0,0.8),inset 0 0 10px rgba(255,255,255,0.4);width:clamp(60px,16vw,75px);height:clamp(60px,16vw,75px);font-size:clamp(1.5rem,6vw,2rem)}
+#questionModal,#startModal,#gameOverModal,#messageModal,#guideModal,#level10Modal{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(5,5,15,0.98);display:none;justify-content:center;align-items:center;z-index:100;padding:15px;direction:rtl}
+#startModal,#guideModal{background:rgba(0,0,0,0.5)}
+#guideModal{z-index:150}
+#level10Modal{z-index:180}
+#countdownModal{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.2);display:none;justify-content:center;align-items:center;z-index:200;color:var(--primary);text-align:center}
+#countdownText{font-size:clamp(6rem,25vw,12rem);font-weight:900;font-family:'BTitr';text-shadow:0 0 40px var(--primary),0 0 20px #000;display:block;animation:pulse 1s infinite}
+#continueText{font-size:clamp(1.5rem,5vw,2rem);font-family:'BKoodak';color:white;margin-top:-10px;text-shadow:0 0 10px rgba(255,255,255,0.8)}
+.encouragement{font-size:clamp(2.5rem,8vw,3.5rem);font-family:'Danstevis';color:var(--success);text-shadow:0 0 20px var(--success);margin-bottom:20px;animation:popIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275)}
+@keyframes popIn{0%{transform:scale(0.1) translateY(50px);opacity:0}80%{transform:scale(1.1) translateY(-10px);opacity:1}100%{transform:scale(1) translateY(0);opacity:1}}
+@keyframes pulse{0%{transform:scale(1);opacity:1}50%{transform:scale(1.1);opacity:0.8}100%{transform:scale(1);opacity:1}}
+.modal-content{background:linear-gradient(180deg,rgba(26,26,46,0.95),rgba(22,33,62,0.95));padding:22px 18px;border-radius:20px;text-align:right;direction:rtl;width:100%;max-width:450px;border:2px solid var(--primary);box-shadow:0 0 40px rgba(0,229,255,0.3);max-height:90vh;overflow-y:auto;color:#fff;animation:slideUp 0.4s ease-out}
+.modal-content h1,.modal-content h2{text-align:center}
+.modal-content p{text-align:center}
+@keyframes slideUp{from{transform:translateY(50px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-content h2{margin-bottom:15px;color:var(--primary);font-family:'BTitr';text-shadow:0 0 15px var(--primary)}
+.modal-content input,.modal-content select{width:100%;padding:12px;font-size:16px;font-family:'BKoodak';border:2px solid var(--primary);background:rgba(0,229,255,0.1);color:#fff;border-radius:10px;margin-bottom:15px;text-align:center;outline:none;transition:all 0.3s}
+.options-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px;direction:rtl}
+.option-btn{background:linear-gradient(145deg,#112233,#1a2a3a);border:2px solid #00E5FF;box-shadow:0 4px 15px rgba(0,229,255,0.3);font-size:clamp(1.1rem,4vw,1.3rem);padding:15px;border-radius:15px;font-family:'BTitr';color:#fff;margin-bottom:10px;cursor:pointer;transition:all 0.3s;white-space:normal;line-height:1.5;text-align:center}
+.option-btn:hover{transform:scale(1.05);box-shadow:0 6px 20px rgba(0,229,255,0.6);background:linear-gradient(145deg,#00E5FF,#0088CC);color:#000}
+.option-btn:active{transform:scale(0.98)}
+#questionText{font-family:'BTitr';font-size:clamp(1.3rem,4vw,1.6rem);margin-bottom:0}
+#questionWord{font-family:'BKoodak';font-size:clamp(1.1rem,4vw,1.4rem);color:#FFEA00;line-height:1.7;display:block;margin-top:15px;background:rgba(0,0,0,0.6);padding:15px;border-radius:12px;border:2px solid #FFEA00;word-wrap:break-word;white-space:pre-wrap;box-shadow:0 5px 15px rgba(255,234,0,0.2)}
+.start-btn{display:block;margin:10px auto 0;background:linear-gradient(145deg,#00E676,#00C853);font-family:'BTitr';color:#000;border:none;padding:12px 25px;font-size:clamp(1rem,4vw,1.2rem);border-radius:15px;cursor:pointer;box-shadow:0 0 20px rgba(0,230,118,0.6);width:100%;text-align:center;transition:transform 0.2s}
+.start-btn:active{transform:scale(0.97)}
+.continue-btn{background:linear-gradient(145deg,#FF9100,#FF6D00);box-shadow:0 0 20px rgba(255,145,0,0.6);color:white;margin-bottom:10px}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:right;direction:rtl;background:rgba(0,0,0,0.5);padding:15px;border-radius:15px;border:1px solid rgba(255,255,255,0.2);margin-bottom:15px;color:#eee;font-size:clamp(0.8rem,3.5vw,1rem)}
+.stats-grid span{color:var(--primary);font-weight:bold;font-family:'BKoodak'}
+.motivation{font-size:clamp(1.5rem,5vw,2rem);color:var(--warning);margin-bottom:20px;font-family:'Danstevis';text-shadow:0 0 10px var(--warning);text-align:center}
+.boss-hp-bar{position:absolute;top:110px;left:50%;transform:translateX(-50%);width:80%;max-width:500px;height:20px;background:rgba(20,0,0,0.9);border:2px solid var(--danger);box-shadow:0 0 20px var(--danger);border-radius:10px;display:none;z-index:10;overflow:hidden}
+.boss-hp-fill{width:100%;height:100%;background:linear-gradient(90deg,#D50000,#FF1744,#FF5252);transition:width 0.3s}
+.guide-list{display:flex;flex-direction:column;gap:10px;margin-bottom:15px;direction:rtl}
+.guide-item{background:rgba(0,0,0,0.6);border-radius:12px;padding:10px;border:1px solid rgba(255,255,255,0.15);display:flex;align-items:flex-start;justify-content:flex-start;gap:10px;text-align:right;font-size:clamp(0.8rem,3.5vw,0.95rem);font-family:'BKoodak';color:#ddd;direction:rtl}
+.guide-item .icon{font-size:24px;min-width:35px;text-align:center}
+
+
+@media(orientation:landscape) and (max-height:600px){
+    .btn{width:45px;height:45px;font-size:1rem}
+    .btn-shoot{width:55px;height:55px;font-size:1.3rem}
+    .controls{bottom:5px}
+    .hud{transform:translateX(-50%) scale(0.8);transform-origin:top center;top:0}
+    .action-btn{width:32px;height:32px;font-size:15px}
+    .options-grid{grid-template-columns:1fr 1fr;gap:5px}
+    .option-btn{padding:8px;font-size:1rem;margin-bottom:0}
+    .boss-hp-bar{top:75px}
+}
+</style>
+</head>
+<body>
+
+<div style="position:fixed;top:15px;left:15px;display:flex;gap:12px;z-index:1000;direction:ltr">
+    <div class="action-btn" onclick="goToStartScreen()" title="خانه" style="color:#FF1744">🏠</div>
+    <div class="action-btn" id="pauseBtn" onclick="togglePause()" title="توقف" style="color:#FFEA00">⏸️</div>
+    <div class="action-btn" id="muteBtn" onclick="toggleMute()" title="صدا" style="color:#00E676">🔊</div>
+</div>
+
+<div class="hud" id="hud" style="display:none;top:65px;left:10px;transform:none;width:calc(100% - 20px);max-width:580px;padding:0;align-items:flex-start">
+    <div class="hud-box" style="display:flex;flex-direction:row;flex-wrap:wrap;gap:10px;text-align:right">
+        <div>⏱ زمان: <span id="timeDisplay">0</span></div>
+        <div>🌌 مسافت: <span id="distDisplay">0.0</span></div>
+        <div>☄️ سرعت: <span id="speedDisplay">100</span>%</div>
+    </div>
+    <div id="levelDisplay" class="level-banner" style="top:-50px">سطح ۱</div>
+    <div class="hud-box" style="text-align:right">
+        <img id="hud-pilot-img" src="" style="width: 24px; height: 24px; border-radius: 50%; display: none; vertical-align: middle; border: 1px solid var(--primary);">
+        <span id="hud-pilot-icon">👩‍🚀</span> <span id="nameDisplay">بازیکن</span><br>
+        ⭐ امتیاز: <span id="scoreDisplay" style="color:var(--warning);font-size:16px">0</span><br>
+        💚 جان: <span id="livesDisplay">💚💚💚</span><br>
+        ⚡ لیزر: <span id="ammoDisplay" style="color:var(--primary);font-size:16px">5</span><br>
+        ✅ صحیح: <span id="correctDisplay">0</span>
+    </div>
+</div>
+
+<div class="boss-hp-bar" id="bossHpBar"><div class="boss-hp-fill" id="bossHpFill"></div></div>
+<canvas id="gameCanvas"></canvas>
+
+<div class="controls" id="controls" style="display:none">
+    <button class="btn" id="btnLeft">◀</button>
+    <button class="btn btn-shoot" id="btnShoot">💥</button>
+    <button class="btn" id="btnRight">▶</button>
+</div>
+
+<div id="startModal" style="display:flex">
+    <div class="modal-content start-screen-content">
+        <h1 style="color:var(--primary);font-family:'MjFaraz';font-size:clamp(2rem,6.5vw,2.6rem);margin-bottom:8px;text-shadow:0 0 20px var(--primary)">🚀 نبرد فضایی</h1>
+        <p style="font-size:clamp(0.9rem,3.5vw,1rem);margin-bottom:15px;color:#ccc;font-family:'BKoodak'">به پایگاه کهکشانی خوش آمدی! سفینه‌ات رو هدایت کن، ترس‌های بجا و نابجا رو تشخیص بده و ناوگان بیگانگان رو نابود کن.</p>
+        <div style="text-align: center; margin-bottom: 12px;">
+            <label for="pilot-img-upload" style="cursor: pointer; display: inline-block;">
+                <div id="pilot-img-preview" style="width: 75px; height: 75px; border-radius: 50%; border: 2px solid var(--primary); background: rgba(0,229,255,0.2) url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22white%22><path d=%22M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z%22/></svg>') center/cover; margin: 0 auto; box-shadow: 0 0 15px rgba(0,229,255,0.3);"></div>
+            </label>
+            <div style="font-size: 0.85rem; color: var(--primary); margin-top: 6px; font-family:'BKoodak';">بارگذاری تصویر خلبان سفینه</div>
+            <input type="file" id="pilot-img-upload" accept="image/*" style="display: none;" onchange="loadPilotImg(event)">
+        </div>
+        <input type="text" id="playerNameInput" placeholder="نام خلبان رو اینجا بنویس...">
+        <button class="start-btn" onclick="showGuide()">ورود به سفینه</button>
+    </div>
+</div>
+
+<div id="guideModal">
+    <div class="modal-content" style="border-color:var(--success);box-shadow:0 0 30px rgba(0,230,118,0.4)">
+        <h2 style="color:var(--success);margin-bottom:15px;font-family:'BTitr'">📚 راهنمای عملیات</h2>
+        <div class="guide-list">
+            <div class="guide-item"><div class="icon">🕹️</div><div><b>هدایت:</b> دکمه‌های ◀ و ▶ سفینه را جابجا کن.</div></div>
+            <div class="guide-item"><div class="icon">💥</div><div><b>شلیک:</b> با دکمه وسط (💥) شلیک کن.</div></div>
+            <div class="guide-item"><div class="icon">💚</div><div><strong style="color:#00E676">انرژی حیات:</strong> یک جان اضافه.</div></div>
+            <div class="guide-item"><div class="icon">🔋</div><div><strong style="color:#00B0FF">باتری لیزر:</strong> ۸ شلیک اضافه.</div></div>
+            <div class="guide-item"><div class="icon">☄️</div><div><strong style="color:#FFEA00">موتور جهش نوری:</strong> افزایش سرعت و پرش.</div></div>
+            <div class="guide-item"><div class="icon">🛡️</div><div><strong style="color:#FF9100">میدان نیرو:</strong> محافظت موقت.</div></div>
+            <div class="guide-item" style="background:rgba(255,234,0,0.15);border-color:#FFEA00"><div class="icon">⚠️</div><div><b>دقت کن:</b> برای گرفتن آیتم‌ها باید پاسخ صحیح سوالات را پیدا کنی! بعد از پاسخ، بازخوردها رو هم با دقت بخون.</div></div>
+        </div>
+        <button class="start-btn" onclick="startGame()">فهمیدم، آماده پرتاب!</button>
+    </div>
+</div>
+
+<div id="level10Modal">
+    <div class="modal-content">
+        <h2 style="color:var(--success);font-family:'MjFaraz';font-size:clamp(1.8rem,6vw,2.4rem);">🎉 فاتح کهکشان شدی!</h2>
+        <p style="font-size:1.1rem;margin-bottom:20px;font-family:'BKoodak';color:#eee">تبریک! ۱۰ مرحله اصلی رو با موفقیت به پایان رسوندی.<br>حالا فرمانده، دوست داری چیکار کنی؟</p>
+        <button class="start-btn continue-btn" onclick="continueEndless()">پیشروی در اعماق فضا 🚀</button>
+        <button class="start-btn" style="background:linear-gradient(145deg,#FFD740,#FFC400);color:var(--dark)" onclick="showFinalReport()">نمایش کارنامه 🏆</button>
+    </div>
+</div>
+
+<div id="questionModal">
+    <div class="modal-content" style="max-height:90vh">
+        <h2 id="questionText">نوع ترس را مشخص کنید:<br><span id="questionWord"></span></h2>
+        <div style="width:100%;height:12px;background:rgba(255,255,255,0.1);border-radius:6px;margin-top:15px;overflow:hidden;border:1px solid rgba(255,255,255,0.3)">
+            <div id="triviaTimerFill" style="width:100%;height:100%;background:#00E676;transition:width 1s linear,background-color 0.5s"></div>
+        </div>
+        <div class="options-grid" id="optionsContainer" style="margin-top:15px"></div>
+    </div>
+</div>
+
+<div id="countdownModal">
+    <div>
+        <div id="encouragementText" class="encouragement" style="display:none"></div>
+        <span id="countdownText">3</span>
+        <div id="continueText">شارژ موتورها...</div>
+    </div>
+</div>
+
+<div id="messageModal">
+    <div class="modal-content">
+        <h2 id="msgBoxText" style="color:var(--success);line-height:1.6;text-align:center;font-family:'BMitra'"></h2>
+    </div>
+</div>
+
+<div id="gameOverModal">
+    <div class="modal-content">
+        <h2 id="gameOverTitle" style="color:var(--danger);font-family:'MjFaraz';font-size:clamp(1.8rem,6vw,2.4rem);">💥 سفینه‌ات منهدم شد!</h2>
+        <div class="stats-grid">
+            <div>👩‍🚀 خلبان: <span id="finalName"></span></div>
+            <div>🏆 سطح: <span id="finalLevel"></span></div>
+            <div>⭐ امتیاز: <span id="finalScore"></span></div>
+            <div>⏱ زمان: <span id="finalTime"></span>s</div>
+            <div>🌌 مسافت: <span id="finalDist"></span></div>
+            <div>☄️ سرعت اوج: <span id="finalSpeed"></span>%</div>
+            <div>✅ صحیح: <span id="finalCorrect" style="color:var(--success)"></span></div>
+            <div>❌ نادرست: <span id="finalIncorrect" style="color:var(--danger)"></span></div>
+        </div>
+        <div class="motivation" id="gameoverMotiv">شکست مقدمه پیروزیه! 🌟</div>
+        <button class="start-btn continue-btn no-print" id="btnRevive" onclick="revivePlayer()" style="display:none">احیای سفینه (آخرین فرصت)</button>
+        <button class="start-btn no-print" onclick="goToStartScreen()">پرواز مجدد</button>
+    </div>
+</div>
+
+<div id="feedbackModal" style="display:none;position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(5,5,15,0.98);justify-content:center;align-items:center;z-index:250;padding:15px;direction:rtl">
+    <div class="modal-content" style="text-align:center;border-color:var(--warning);box-shadow:0 0 30px rgba(255,234,0,0.4)">
+        <h2 id="feedbackTitle" style="font-family:'MjFaraz';font-size:clamp(1.8rem,6vw,2.4rem);margin-bottom:15px"></h2>
+        <div id="feedbackCorrect" style="font-family:'BMitra';font-size:clamp(1.2rem,4vw,1.4rem);margin-top:20px;line-height:1.8;background:rgba(0,0,0,0.7);padding:15px;border-radius:12px;border:2px solid;text-align:justify;"></div>
+        <p id="feedbackWaitText" style="margin-top:20px;font-family:'BKoodak';color:#FFEA00;font-size:1rem">زمان مطالعه نکته آموزشی (۴ ثانیه)...</p>
+        <button id="feedbackContinueBtn" class="start-btn" style="display:none;margin-top:20px;" onclick="continueAfterFeedback()">ادامه پرواز 🚀</button>
+    </div>
+</div>
+
+<script>
+function levDist(s,t){if(!s.length)return t.length;if(!t.length)return s.length;const arr=[];for(let i=0;i<=t.length;i++){arr[i]=[i];for(let j=1;j<=s.length;j++){arr[i][j]=i===0?j:Math.min(arr[i-1][j]+1,arr[i][j-1]+1,arr[i-1][j-1]+(s[j-1]===t[i-1]?0:1))}}return arr[t.length][s.length]}
+function isFuzzyMatch(input,target){let inp=input.replace(/\s+/g,'').replace(/ي/g,"ی").replace(/ك/g,"ک");let tgt=target.replace(/\s+/g,'').replace(/ي/g,"ی").replace(/ك/g,"ک");if(inp===tgt)return true;if(inp.includes(tgt)||tgt.includes(inp))return true;let dist=levDist(inp,tgt);let maxLen=Math.max(inp.length,tgt.length);return(maxLen-dist)/maxLen>=0.75}
+function fuzzyContains(text,keyword){let words=text.split(/[\s.،؛,؛:!؟()«»"-]+/);for(let w of words){if(w.length>=3&&isFuzzyMatch(w,keyword))return true}return isFuzzyMatch(text,keyword)}
+
+let pilotImgSrc = null;
+function loadPilotImg(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            pilotImgSrc = e.target.result;
+            document.getElementById('pilot-img-preview').style.backgroundImage = `url('${pilotImgSrc}')`;
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+let shakeTime=0,flashAlpha=0,particles=[],floatingTexts=[];
+function triggerShake(d=15){shakeTime=d}
+let particleFactor=window.innerWidth<600?0.4:1;
+function createExplosion(x,y,color,count=35){count=Math.floor(count*particleFactor);for(let i=0;i<count;i++)particles.push({x:x,y:y,vx:(Math.random()-0.5)*15,vy:(Math.random()-0.5)*15,life:1.0,decay:0.04,color:color,size:Math.random()*5+2})}
+function createSmallTankExplosion(x,y){triggerShake(20);if(navigator.vibrate)navigator.vibrate([150,50,150]);let c1=Math.floor(30*particleFactor);for(let i=0;i<c1;i++)particles.push({x:x,y:y,vx:(Math.random()-0.5)*18,vy:(Math.random()-0.5)*18,life:1.5,decay:0.02,color:Math.random()>0.5?"#FF1744":"#FF9100",size:Math.random()*6+3});let c2=Math.floor(20*particleFactor);for(let i=0;i<c2;i++)particles.push({x:x,y:y,vx:(Math.random()-0.5)*10,vy:(Math.random()-0.5)*10-1,life:2.5,decay:0.015,color:"rgba(100, 100, 100, 0.7)",size:Math.random()*12+6})}
+function createBossExplosion(x,y){triggerShake(40);if(navigator.vibrate)navigator.vibrate([600,100,600,100,600]);let c1=Math.floor(80*particleFactor);for(let i=0;i<c1;i++)particles.push({x:x,y:y,vx:(Math.random()-0.5)*30,vy:(Math.random()-0.5)*30,life:2.0,decay:0.015,color:Math.random()>0.5?"#FF1744":"#FF9100",size:Math.random()*8+4});let c2=Math.floor(70*particleFactor);for(let i=0;i<c2;i++)particles.push({x:x,y:y,vx:(Math.random()-0.5)*15,vy:(Math.random()-0.5)*15-2,life:4.0,decay:0.01,color:"rgba(100, 100, 100, 0.8)",size:Math.random()*15+10})}
+function addFloatingText(x,y,text,color){floatingTexts.push({x:x,y:y,text:text,color:color,life:1.0})}
+
+function showGuide(){
+    let nameInput=document.getElementById('playerNameInput').value.trim();
+    if(nameInput!=="") playerName=nameInput;
+    else playerName="بازیکن";
+    document.getElementById('nameDisplay').innerText=playerName;
+    document.getElementById('startModal').style.display='none';
+    document.getElementById('guideModal').style.display='flex';
+}
+
+let bgMusic,shootSoundTemplate,tankAudio,reloadAudio,turboAudio,applauseAudio,sighAudio,explosionAudio,audioCtx,isMuted=false,hasGameStarted=false,isManualPaused=false;
+
+// ===== موسیقی و جلوه‌های صوتی ساخته‌شده با Web Audio (بدون نیاز به فایل خارجی) =====
+// اگر خواستی موسیقی قبلی (فایل mp3) برگردد، مقدار زیر را false کن.
+const USE_SYNTH_MUSIC=true;
+let _noiseBuf=null;
+function getNoiseBuffer(ctx){
+    if(!_noiseBuf||_noiseBuf.sampleRate!==ctx.sampleRate){
+        const len=ctx.sampleRate*2,b=ctx.createBuffer(1,len,ctx.sampleRate),d=b.getChannelData(0);
+        for(let i=0;i<len;i++)d[i]=Math.random()*2-1;
+        _noiseBuf=b;
+    }
+    return _noiseBuf;
+}
+function midiToFreq(m){return 440*Math.pow(2,(m-69)/12)}
+
+// موسیقی هیجانی فضایی: ضرب چهارچهارم، بیس تپنده، آرپژ درخشان و پد، در ۱۴۰ ضرب در دقیقه
+class SynthMusic{
+    constructor(){
+        this.bpm=140;this._vol=0.3;this.step=0;this.playing=false;this.timer=null;
+        this.master=null;this.builtFor=null;this.nextTime=0;this.ctxOverride=null;
+        this.prog=[
+            {b:33,t:[57,60,64]},{b:29,t:[53,57,60]},{b:36,t:[60,64,67]},{b:31,t:[55,59,62]},
+            {b:33,t:[57,60,64]},{b:29,t:[53,57,60]},{b:38,t:[57,62,65]},{b:28,t:[56,59,64]}
+        ];
+        this.arpPat=[0,1,2,3,2,1,2,3,0,1,2,3,2,1,3,2];
+    }
+    get ctx(){return this.ctxOverride||audioCtx}
+    get paused(){return !this.playing}
+    get volume(){return this._vol}
+    set volume(v){this._vol=v;if(this.master&&this.playing)this.master.gain.setTargetAtTime(v,this.ctx.currentTime,0.02)}
+    get currentTime(){return 0}
+    set currentTime(v){if(v===0)this.step=0}
+    get loop(){return true}
+    set loop(v){}
+    _build(ctx){
+        if(this.master&&this.builtFor===ctx)return;
+        this.builtFor=ctx;
+        const comp=ctx.createDynamicsCompressor();
+        comp.threshold.value=-14;comp.knee.value=12;comp.ratio.value=5;comp.attack.value=0.004;comp.release.value=0.15;
+        comp.connect(ctx.destination);
+        this.master=ctx.createGain();this.master.gain.value=0;this.master.connect(comp);
+        this.delay=ctx.createDelay(1);this.delay.delayTime.value=60/this.bpm*0.75;
+        const fb=ctx.createGain();fb.gain.value=0.33;
+        const wet=ctx.createGain();wet.gain.value=0.35;
+        this.delay.connect(fb);fb.connect(this.delay);this.delay.connect(wet);wet.connect(this.master);
+    }
+    play(){
+        const ctx=this.ctx;
+        if(!ctx||this.playing)return Promise.resolve();
+        this._build(ctx);
+        this.playing=true;
+        this.master.gain.cancelScheduledValues(ctx.currentTime);
+        this.master.gain.setValueAtTime(0,ctx.currentTime);
+        this.master.gain.setTargetAtTime(this._vol,ctx.currentTime,0.05);
+        this.nextTime=ctx.currentTime+0.08;
+        clearInterval(this.timer);
+        this.timer=setInterval(()=>this._tick(),25);
+        this._tick();
+        return Promise.resolve();
+    }
+    pause(){
+        if(!this.playing)return;
+        this.playing=false;
+        clearInterval(this.timer);this.timer=null;
+        const ctx=this.ctx;
+        if(this.master){this.master.gain.cancelScheduledValues(ctx.currentTime);this.master.gain.setTargetAtTime(0,ctx.currentTime,0.03)}
+    }
+    _tick(){
+        const ctx=this.ctx,stepDur=60/this.bpm/4;
+        if(this.nextTime<ctx.currentTime-0.1)this.nextTime=ctx.currentTime+0.05;
+        while(this.nextTime<ctx.currentTime+0.2){
+            this._scheduleStep(this.step,this.nextTime);
+            this.nextTime+=stepDur;
+            this.step=(this.step+1)%128;
+        }
+    }
+    _tone(type,freq,t,dur,gain,cutoff,dest,detune){
+        const ctx=this.ctx,o=ctx.createOscillator(),f=ctx.createBiquadFilter(),g=ctx.createGain();
+        o.type=type;o.frequency.setValueAtTime(freq,t);if(detune)o.detune.value=detune;
+        f.type='lowpass';f.frequency.value=cutoff;
+        g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(gain,t+0.006);g.gain.exponentialRampToValueAtTime(0.0008,t+dur);
+        o.connect(f);f.connect(g);g.connect(dest);
+        o.start(t);o.stop(t+dur+0.05);
+    }
+    _noise(t,dur,gain,type,freq,q){
+        const ctx=this.ctx,s=ctx.createBufferSource(),f=ctx.createBiquadFilter(),g=ctx.createGain();
+        s.buffer=getNoiseBuffer(ctx);f.type=type;f.frequency.value=freq;f.Q.value=q||0.7;
+        g.gain.setValueAtTime(gain,t);g.gain.exponentialRampToValueAtTime(0.0008,t+dur);
+        s.connect(f);f.connect(g);g.connect(this.master);
+        s.start(t,Math.random()*1.5);s.stop(t+dur+0.02);
+    }
+    _kick(t){
+        const ctx=this.ctx,o=ctx.createOscillator(),g=ctx.createGain();
+        o.type='sine';o.frequency.setValueAtTime(160,t);o.frequency.exponentialRampToValueAtTime(42,t+0.12);
+        g.gain.setValueAtTime(0.95,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.26);
+        o.connect(g);g.connect(this.master);o.start(t);o.stop(t+0.3);
+    }
+    _snare(t){
+        this._noise(t,0.16,0.4,'bandpass',1900,0.8);
+        this._tone('triangle',190,t,0.09,0.22,1500,this.master);
+    }
+    _scheduleStep(s,t){
+        const bar=Math.floor(s/16),st=s%16,ch=this.prog[bar],ctx=this.ctx;
+        const beat=60/this.bpm;
+        // درام
+        if(st%4===0)this._kick(t);
+        if(st===4||st===12||(bar===7&&st>12))this._snare(t);
+        if(st%4===2)this._noise(t,0.11,0.16,'highpass',7500,0.7);
+        else if(st%2===1)this._noise(t,0.035,0.06,'highpass',8500,0.7);
+        // بیس
+        if(st%2===0){
+            const up=(st===6||st===14)?12:0;
+            this._tone('sawtooth',midiToFreq(ch.b+up),t,beat*0.42,0.34,520,this.master);
+        }
+        // آرپژ درخشان (با اکو)
+        const idx=this.arpPat[st],note=idx===3?ch.t[0]+12:ch.t[idx];
+        const fr=midiToFreq(note+12);
+        this._tone('square',fr,t,beat*0.45,0.05,2600,this.master,-7);
+        this._tone('square',fr,t,beat*0.45,0.05,2600,this.master,7);
+        this._tone('square',fr,t,beat*0.45,0.04,2600,this.delay,0);
+        // پد نرم در ابتدای هر میزان
+        if(st===0){
+            ch.t.forEach(n=>this._tone('sawtooth',midiToFreq(n),t,beat*3.8,0.03,900,this.master,3));
+        }
+        // خیزش نویز در میزان آخر
+        if(bar===7&&st===0){
+            const rs=ctx.createBufferSource(),f=ctx.createBiquadFilter(),g=ctx.createGain(),d=beat*4;
+            rs.buffer=getNoiseBuffer(ctx);f.type='bandpass';f.Q.value=1.2;
+            f.frequency.setValueAtTime(400,t);f.frequency.exponentialRampToValueAtTime(7000,t+d);
+            g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(0.12,t+d);g.gain.linearRampToValueAtTime(0,t+d+0.05);
+            rs.connect(f);f.connect(g);g.connect(this.master);rs.start(t,0);rs.stop(t+d+0.1);
+        }
+    }
+}
+
+// صدای تشویق جمعیت: چند ده کف زدن تصادفی روی یک بستر نویز
+class SynthApplause{
+    constructor(){this.out=null;this.vol=0.8;this.ctxOverride=null;this.dur=3.0}
+    get ctx(){return this.ctxOverride||audioCtx}
+    get volume(){return this.vol}
+    set volume(v){this.vol=v}
+    get currentTime(){return 0}
+    set currentTime(v){}
+    play(){
+        const ctx=this.ctx;
+        if(!ctx)return Promise.resolve();
+        this.pause();
+        const out=ctx.createGain();out.gain.value=this.vol;out.connect(ctx.destination);this.out=out;
+        const t0=ctx.currentTime+0.02,dur=this.dur,nb=getNoiseBuffer(ctx);
+        const bed=ctx.createBufferSource(),bp=ctx.createBiquadFilter(),bg=ctx.createGain();
+        bed.buffer=nb;bed.loop=true;bp.type='bandpass';bp.frequency.value=2800;bp.Q.value=0.6;
+        bg.gain.setValueAtTime(0.0001,t0);bg.gain.linearRampToValueAtTime(0.16,t0+0.4);
+        bg.gain.setValueAtTime(0.16,t0+1.7);bg.gain.linearRampToValueAtTime(0,t0+dur);
+        bed.connect(bp);bp.connect(bg);bg.connect(out);bed.start(t0);bed.stop(t0+dur+0.05);
+        const n=Math.floor(dur*140);
+        for(let i=0;i<n;i++){
+            const u=Math.random()*dur;
+            const env=u<0.4?u/0.4:(u<1.8?1:Math.max(0,1-(u-1.8)/1.2));
+            if(Math.random()>env)continue;
+            const c=ctx.createBufferSource(),f=ctx.createBiquadFilter(),g=ctx.createGain(),st=t0+u,d=0.025+Math.random()*0.035;
+            c.buffer=nb;f.type='bandpass';f.frequency.value=900+Math.random()*3600;f.Q.value=1.1+Math.random()*1.6;
+            g.gain.setValueAtTime(0.0001,st);g.gain.linearRampToValueAtTime(0.45+Math.random()*0.75,st+0.002);g.gain.exponentialRampToValueAtTime(0.0008,st+d);
+            c.connect(f);f.connect(g);g.connect(out);c.start(st,Math.random()*1.5);c.stop(st+d+0.02);
+        }
+        return Promise.resolve();
+    }
+    pause(){
+        if(!this.out)return;
+        const o=this.out,ctx=this.ctx;this.out=null;
+        o.gain.cancelScheduledValues(ctx.currentTime);o.gain.setTargetAtTime(0,ctx.currentTime,0.02);
+        setTimeout(()=>{try{o.disconnect()}catch(e){}},300);
+    }
+}
+
+// آه کشیدن جمعیت (اوووه!): چند صدای آوازی که با هم آرام پایین می‌آیند
+class SynthSigh{
+    constructor(){this.out=null;this.vol=0.8;this.ctxOverride=null}
+    get ctx(){return this.ctxOverride||audioCtx}
+    get volume(){return this.vol}
+    set volume(v){this.vol=v}
+    get currentTime(){return 0}
+    set currentTime(v){}
+    play(){
+        const ctx=this.ctx;
+        if(!ctx)return Promise.resolve();
+        this.pause();
+        const out=ctx.createGain();out.gain.value=this.vol;out.connect(ctx.destination);this.out=out;
+        const t0=ctx.currentTime+0.02,dur=1.9;
+        const bases=[118,131,147,165,196,220,247,262,294];
+        bases.forEach((f0,i)=>{
+            const st=t0+Math.random()*0.2,len=dur-0.1+Math.random()*0.3;
+            const o=ctx.createOscillator(),vib=ctx.createOscillator(),vg=ctx.createGain(),eg=ctx.createGain(),mix=ctx.createGain();
+            o.type='sawtooth';
+            o.frequency.setValueAtTime(f0*1.12,st);
+            o.frequency.linearRampToValueAtTime(f0*1.0,st+0.25);
+            o.frequency.exponentialRampToValueAtTime(f0*0.78,st+len);
+            vib.frequency.value=4.8+Math.random()*1.5;vg.gain.value=f0*0.012;
+            vib.connect(vg);vg.connect(o.frequency);
+            [[720,6,1.0,460],[1150,8,0.6,800],[2700,10,0.2,2400]].forEach(fm=>{
+                const bp=ctx.createBiquadFilter();
+                bp.type='bandpass';bp.Q.value=fm[1];
+                bp.frequency.setValueAtTime(fm[0],st);bp.frequency.linearRampToValueAtTime(fm[3],st+len);
+                const fg=ctx.createGain();fg.gain.value=fm[2];
+                o.connect(bp);bp.connect(fg);fg.connect(mix);
+            });
+            eg.gain.setValueAtTime(0.0001,st);eg.gain.linearRampToValueAtTime(0.55,st+0.18);
+            eg.gain.setValueAtTime(0.55,st+0.45);eg.gain.linearRampToValueAtTime(0.3,st+len*0.7);eg.gain.exponentialRampToValueAtTime(0.0008,st+len);
+            mix.connect(eg);
+            let node=eg;
+            if(ctx.createStereoPanner){const p=ctx.createStereoPanner();p.pan.value=(i/(bases.length-1))*1.6-0.8;eg.connect(p);node=p}
+            node.connect(out);
+            o.start(st);vib.start(st);o.stop(st+len+0.05);vib.stop(st+len+0.05);
+        });
+        // نفس بیرون‌داده‌شده
+        const s=ctx.createBufferSource(),f=ctx.createBiquadFilter(),g=ctx.createGain();
+        s.buffer=getNoiseBuffer(ctx);f.type='bandpass';f.Q.value=0.9;
+        f.frequency.setValueAtTime(2600,t0);f.frequency.exponentialRampToValueAtTime(700,t0+dur);
+        g.gain.setValueAtTime(0.0001,t0);g.gain.linearRampToValueAtTime(0.1,t0+0.35);g.gain.exponentialRampToValueAtTime(0.0008,t0+dur);
+        s.connect(f);f.connect(g);g.connect(out);s.start(t0,0);s.stop(t0+dur+0.05);
+        return Promise.resolve();
+    }
+    pause(){
+        if(!this.out)return;
+        const o=this.out,ctx=this.ctx;this.out=null;
+        o.gain.cancelScheduledValues(ctx.currentTime);o.gain.setTargetAtTime(0,ctx.currentTime,0.03);
+        setTimeout(()=>{try{o.disconnect()}catch(e){}},400);
+    }
+}
+
+function initMediaFiles(){
+    if(!bgMusic){
+        bgMusic=USE_SYNTH_MUSIC?new SynthMusic():new Audio('https://s11.uupload.ir/files/notebooklm/Non%20Vocal%20Bass%20Music%20_04%20[SevilMusic]%20(1).mp3');bgMusic.loop=true;bgMusic.volume=0.3;
+        shootSoundTemplate=new Audio('https://sedatoseda.com/wp-content/uploads/shotgun-sound.mp3');shootSoundTemplate.volume=0.6;
+        tankAudio=new Audio('https://sedatoseda.com/wp-content/uploads/tank-moving-143104.mp3');tankAudio.loop=true;tankAudio.volume=0.5;
+        reloadAudio=new Audio('https://dl4.fara-download.ir/audio/sound_effect/objects/guns/reload/gun_reload3.mp3');reloadAudio.volume=0.9;
+        turboAudio=new Audio('https://sedatoseda.com/wp-content/uploads/Turbo-sound-2.mp3');turboAudio.volume=0.7;
+        applauseAudio=new SynthApplause();applauseAudio.volume=0.8;sighAudio=new SynthSigh();sighAudio.volume=0.8;
+        explosionAudio=new Audio('https://sedatoseda.com/wp-content/uploads/explosion-01.mp3');explosionAudio.volume=0.8;
+    }
+    if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+    if(audioCtx.state==='suspended')audioCtx.resume();
+}
+
+function playExplosionSound(){if(isMuted||!explosionAudio)return;let snd=explosionAudio.cloneNode();snd.volume=0.8;snd.play().catch(e=>console.log(e))}
+function playSfx(type){if(isMuted||!audioCtx)return;const osc=audioCtx.createOscillator(),gain=audioCtx.createGain();osc.connect(gain);gain.connect(audioCtx.destination);gain.gain.value=1.0;const now=audioCtx.currentTime;if(type==='crash'){osc.type='sawtooth';osc.frequency.setValueAtTime(150,now);osc.frequency.exponentialRampToValueAtTime(10,now+0.4);gain.gain.setValueAtTime(0.8,now);gain.gain.exponentialRampToValueAtTime(0.01,now+0.4);osc.start(now);osc.stop(now+0.4)}else if(type==='powerup'){osc.type='sine';osc.frequency.setValueAtTime(400,now);osc.frequency.linearRampToValueAtTime(800,now+0.3);gain.gain.setValueAtTime(1.0,now);gain.gain.exponentialRampToValueAtTime(0.01,now+0.3);osc.start(now);osc.stop(now+0.3)}else if(type==='correct'){osc.type='square';osc.frequency.setValueAtTime(400,now);osc.frequency.setValueAtTime(600,now+0.1);gain.gain.setValueAtTime(1.0,now);gain.gain.exponentialRampToValueAtTime(0.01,now+0.3);osc.start(now);osc.stop(now+0.3)}else if(type==='wrong'){osc.type='sawtooth';osc.frequency.setValueAtTime(300,now);osc.frequency.linearRampToValueAtTime(100,now+0.4);gain.gain.setValueAtTime(1.0,now);gain.gain.exponentialRampToValueAtTime(0.01,now+0.4);osc.start(now);osc.stop(now+0.4)}else if(type==='enemyShoot'){osc.type='square';osc.frequency.setValueAtTime(800,now);osc.frequency.exponentialRampToValueAtTime(100,now+0.2);gain.gain.setValueAtTime(0.3,now);gain.gain.exponentialRampToValueAtTime(0.01,now+0.2);osc.start(now);osc.stop(now+0.2)}}
+
+function toggleMute(){
+    isMuted=!isMuted;
+    const btn=document.getElementById('muteBtn');
+    try { initMediaFiles(); } catch(e) {}
+    if(isMuted){
+        if(bgMusic) bgMusic.pause();
+        if(tankAudio) tankAudio.pause();
+        if(turboAudio) turboAudio.pause();
+        if(applauseAudio) applauseAudio.pause();
+        if(sighAudio) sighAudio.pause();
+        btn.innerText='🔇';
+    }else{
+        btn.innerText='🔊';
+        let isGameOverOpen = document.getElementById('gameOverModal').style.display === 'flex';
+        let isStartOpen = document.getElementById('startModal').style.display === 'flex';
+        let isGuideOpen = document.getElementById('guideModal').style.display === 'flex';
+        if(hasGameStarted && !isManualPaused && !isGameOverOpen && !isStartOpen && !isGuideOpen && bgMusic){
+            bgMusic.play().catch(e=>console.log(e));
+        }
+        if(!isPaused && isBossMode && tankAudio){
+            tankAudio.play().catch(e=>console.log(e));
+        }
+        if(!isPaused && player.turboTimer > 0 && turboAudio){
+            turboAudio.play().catch(e=>console.log(e));
+        }
+    }
+}
+
+function isAnyModalOpen(){
+    const modals = ['startModal','guideModal','questionModal','feedbackModal','countdownModal','level10Modal','gameOverModal','messageModal'];
+    return modals.some(id => {
+        const el = document.getElementById(id);
+        return el && el.style.display === 'flex';
+    });
+}
+
+function togglePause(){
+    if(lives<=0 || (isBossMode&&boss&&boss.hp<=0) || isAnyModalOpen()) return;
+    isPaused=!isPaused;
+    isManualPaused=isPaused;
+    document.getElementById('pauseBtn').innerText=isPaused?'▶️':'⏸️';
+    if(isPaused){
+        if(bgMusic) bgMusic.pause();
+        if(tankAudio) tankAudio.pause();
+        if(turboAudio) turboAudio.pause();
+    }else{
+        if(!isMuted){
+            if(bgMusic) bgMusic.play().catch(e=>console.log(e));
+            if(isBossMode && tankAudio) tankAudio.play().catch(e=>console.log(e));
+            if(player.turboTimer > 0 && turboAudio) turboAudio.play().catch(e=>console.log(e));
+        }
+    }
+}
+
+let countdownInterval = null;
+let feedbackWaitInterval = null;
+
+function goToStartScreen(){
+    isPaused = true;
+    isManualPaused = false;
+    hasGameStarted = false;
+    if(gameLoopId){ cancelAnimationFrame(gameLoopId); gameLoopId = null; }
+    if(gameInterval){ clearInterval(gameInterval); gameInterval = null; }
+    if(triviaTimerInterval){ clearInterval(triviaTimerInterval); triviaTimerInterval = null; }
+    if(countdownInterval){ clearInterval(countdownInterval); countdownInterval = null; }
+    if(feedbackWaitInterval){ clearInterval(feedbackWaitInterval); feedbackWaitInterval = null; }
+    clearTimeout(levelBannerTimeout);
+
+    if(bgMusic){ bgMusic.pause(); bgMusic.currentTime=0; }
+    if(tankAudio){ tankAudio.pause(); tankAudio.currentTime=0; }
+    if(turboAudio){ turboAudio.pause(); turboAudio.currentTime=0; }
+    if(applauseAudio){ applauseAudio.pause(); applauseAudio.currentTime=0; }
+    if(sighAudio){ sighAudio.pause(); }
+
+    frames=0; score=0; lives=5; ammo=5; distance=0; time=0; level=1;
+    correctAnswers=0; incorrectAnswers=0; roadOffset=0;
+    gameSpeed=initialGameSpeed; maxSpeedReached=100; difficultyMultiplier=1;
+    activePowerup=null; hasRevived=false; isEndlessMode=false;
+    lastTurboTime=0; lastRepairTime=0; lastAmmoTime=0; lastShieldTime=0;
+    isBossMode=false; boss=null; bossBullets=[]; bossBasesDestroyed=0;
+    enemies=[]; bullets=[]; powerups=[]; particles=[]; floatingTexts=[];
+    targetLanes=3; currentLanes=3; targetCurveMagnitude=0; currentCurveMagnitude=0;
+    player.lane=1; player.turboTimer=0; player.shieldTimer=0;
+
+    document.getElementById('pauseBtn').innerText='⏸️';
+    document.getElementById('hud').style.display='none';
+    document.getElementById('controls').style.display='none';
+    document.getElementById('bossHpBar').style.display='none';
+    document.getElementById('levelDisplay').style.opacity='0';
+
+    const modals = ['guideModal','questionModal','feedbackModal','countdownModal','level10Modal','gameOverModal','messageModal'];
+    modals.forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.style.display = 'none';
+    });
+
+    document.getElementById('startModal').style.display='flex';
+    resize();
+    draw();
+}
+
+const canvas=document.getElementById('gameCanvas'),ctx=canvas.getContext('2d');
+let width,height,roadWidth,targetLanes=3,currentLanes=3,laneWidth,curveDirection=1,targetCurveMagnitude=0,currentCurveMagnitude=0,backgroundNebulas=[],backgroundStars=[];
+
+// تنظیم هوشمند موقعیت عمودی سفینه آبی تا همیشه کمی بالاتر از سه دکمه پایین باشد و برخورد نکند
+function updatePlayerYPosition(){
+    const ctrlEl = document.getElementById('controls');
+    if(ctrlEl && ctrlEl.style.display !== 'none'){
+        const rect = ctrlEl.getBoundingClientRect();
+        if(rect.top > 0){
+            // فاصله مرکز سفینه تا بالای دکمه‌ها (شامل طول انتهای سفینه + شعله موتور + حاشیه امن)
+            player.y = rect.top - 52;
+            return;
+        }
+    }
+    const bottomOffset = Math.max(35, height * 0.05);
+    const btnShootHeight = Math.min(Math.max(width * 0.16, 60), 75);
+    player.y = height - bottomOffset - btnShootHeight - 52;
+}
+
+function resize(){
+    width=window.innerWidth>600?600:window.innerWidth;
+    height=window.innerHeight;
+    canvas.width=width;
+    canvas.height=height;
+    roadWidth=width-30;
+    laneWidth=roadWidth/currentLanes;
+    updatePlayerYPosition();
+    player.currentX=15+(player.lane*laneWidth)+(laneWidth/2);
+    backgroundStars=[];
+    for(let i=0;i<40;i++)backgroundStars.push({x:Math.random()*width,y:Math.random()*height,size:Math.random()*2+0.5,speed:Math.random()*2+1,opacity:Math.random()*0.7+0.3,layer:Math.random()*0.5+0.5});
+    backgroundNebulas=[];
+    for(let i=0;i<2;i++)backgroundNebulas.push({x:Math.random()*width,y:Math.random()*height,radius:Math.random()*150+100,color:i%2===0?"rgba(100, 0, 200, 0.15)":"rgba(0, 150, 255, 0.1)"});
+    if(typeof offscreenCache!=='undefined')offscreenCache['bgNebula']=null;
+}
+window.addEventListener('resize',resize);
+
+let globalCurve=0;
+let offscreenCache={};
+function getCachedSprite(key,drawFn){
+    if(!offscreenCache[key]){
+        let c=document.createElement('canvas');
+        c.width=200;c.height=200;
+        let cx=c.getContext('2d');
+        cx.translate(100,100);
+        drawFn(cx);
+        offscreenCache[key]=c;
+    }
+    return offscreenCache[key];
+}
+
+function getCurveOffset(y){
+    let relativeY=height-y;
+    if(relativeY<0)relativeY=0;
+    let ratio=relativeY/height;
+    return globalCurve*(ratio*Math.sqrt(ratio));
+}
+
+let levelBannerTimeout;
+function showLevelBanner(text){
+    let banner=document.getElementById('levelDisplay');
+    banner.innerText=text;
+    banner.style.opacity='1';
+    banner.style.transform="translateX(-50%) scale(1.4)";
+    setTimeout(()=>banner.style.transform="translateX(-50%) scale(1)",500);
+    clearTimeout(levelBannerTimeout);
+    levelBannerTimeout=setTimeout(()=>{banner.style.opacity='0';},5000);
+}
+
+let gameLoopId,isPaused=false,frames=0,score=0,lives=5,ammo=5,distance=0,time=0,level=1,correctAnswers=0,incorrectAnswers=0,playerName="بازیکن",roadOffset=0,initialGameSpeed=5,gameSpeed=initialGameSpeed,maxSpeedReached=100,difficultyMultiplier=1,activePowerup=null,hasRevived=false,MAX_LEVEL=10,isEndlessMode=false,lastTurboTime=0,lastRepairTime=0,lastAmmoTime=0,lastShieldTime=0,isBossMode=false,boss=null,bossBullets=[],bossBasesDestroyed=0,preBossGameSpeed=5,gameInterval;
+
+const defaultQs=[
+    {t:"mc",q:"ترس از آمپول زدن",o:["ترس بجا","ترس نابجا"],a:1,h:"ترس نابجا است. آمپول فقط چند ثانیه کمی درد دارد ولی ما را از بیماری‌های سخت حفظ می‌کند یا زودتر خوب می‌کند. نفس عمیق می‌کشیم و به جای دیگری نگاه می‌کنیم تا راحت‌تر بگذرد."},
+    {t:"mc",q:"ترس از نزدیک شدن به سگ ناشناسی که پارس می‌کند و دندان نشان می‌دهد",o:["ترس بجا","ترس نابجا"],a:0,h:"ترس بجا است. سگ ناشناس و عصبانی ممکن است گاز بگیرد. آرام و بدون دویدن دور می‌شویم و به بزرگترها خبر می‌دهیم."},
+    {t:"mc",q:"ترس از صدای بلند جاروبرقی",o:["ترس بجا","ترس نابجا"],a:1,h:"ترس نابجا است. جاروبرقی فقط صدای بلندی دارد و به ما آسیبی نمی‌زند. می‌توانیم از دور تماشایش کنیم یا گوش‌هایمان را بگیریم تا عادت کنیم."},
+    {t:"mc",q:"ترس از رد شدن از چهارراه وقتی چراغ عابر پیاده قرمز است",o:["ترس بجا","ترس نابجا"],a:0,h:"ترس بجا است. وقتی چراغ قرمز است ماشین‌ها حرکت می‌کنند و ممکن است به ما بزنند. این ترس باعث می‌شود صبر کنیم تا چراغ سبز شود."},
+    {t:"mc",q:"ترس از سایه‌ی خودت روی دیوار",o:["ترس بجا","ترس نابجا"],a:1,h:"ترس نابجا است. سایه فقط جایی است که نور به ما نمی‌رسد. هر بار دست تکان بدهی می‌بینی سایه هم همان کار را می‌کند، پس ترسناک نیست."},
+    {t:"mc",q:"ترس از دست زدن به سماور یا بخاری داغ",o:["ترس بجا","ترس نابجا"],a:0,h:"ترس بجا است. سطح داغ دست را می‌سوزاند و سوختگی دردناک است. پس از آن دور می‌مانیم و فقط بزرگترها به آن‌ها دست می‌زنند."},
+    {t:"mc",q:"ترس از رفتن به کلاس جدید و آشنا شدن با هم‌کلاسی‌های تازه",o:["ترس بجا","ترس نابجا"],a:1,h:"ترس نابجا است. بیشتر بچه‌ها دوست دارند دوست تازه پیدا کنند. اگر لبخند بزنی و سلام کنی، خیلی زود با هم دوست می‌شوید."},
+    {t:"mc",q:"ترس از رفتن داخل آب دریا وقتی موج‌های خیلی بزرگ دارد",o:["ترس بجا","ترس نابجا"],a:0,h:"ترس بجا است. موج‌های بزرگ می‌توانند ما را با خود ببرند و خطر غرق شدن دارند. بهتر است از ساحل تماشا کنیم تا دریا آرام شود."},
+    {t:"mc",q:"ترس از صدای باران روی پنجره وقتی داخل خانه هستی",o:["ترس بجا","ترس نابجا"],a:1,h:"ترس نابجا است. داخل خانه خشک و در امانی و صدای باران فقط قطره‌هایی است که به شیشه می‌خورند. شنیدن این صدا حتی می‌تواند آرامش‌بخش باشد."},
+    {t:"mc",q:"ترس از خوردن قارچ‌های وحشی که در جنگل پیدا کرده‌ای",o:["ترس بجا","ترس نابجا"],a:0,h:"ترس بجا است. بعضی قارچ‌های وحشی سمی‌اند و شبیه قارچ‌های خوراکی‌اند. هیچ‌وقت چیزی را از طبیعت نمی‌خوریم، مگر بزرگتر مطمئن بگوید خوردنی است."},
+    {t:"mc",q:"ترس از اشتباه نوشتن یک کلمه در دفتر مشق",o:["ترس بجا","ترس نابجا"],a:1,h:"ترس نابجا است. اشتباه نوشتن در دفتر عادی است و با پاک‌کن یا خط کشیدن درست می‌شود. همه‌ی ما در یادگیری اشتباه می‌کنیم."},
+    {t:"mc",q:"ترس از ماندن در خانه‌ای که بوی گاز می‌دهد",o:["ترس بجا","ترس نابجا"],a:0,h:"ترس بجا است. گاز می‌تواند آتش‌سوزی یا مسمومیت درست کند. کلید برق را روشن نمی‌کنیم، به هوای آزاد می‌رویم و به بزرگترها خبر می‌دهیم."},
+    {t:"mc",q:"ترس از ماهی قرمز کوچکی که داخل تنگ شنا می‌کند",o:["ترس بجا","ترس نابجا"],a:1,h:"ترس نابجا است. ماهی قرمز در تنگ نه گاز می‌گیرد و نه نیش می‌زند. تماشای شنا کردنش حتی قشنگ و آرام‌کننده است."},
+    {t:"mc",q:"ترس از باز کردن در خانه به روی غریبه‌ای وقتی تنها هستی",o:["ترس بجا","ترس نابجا"],a:0,h:"ترس بجا است. نمی‌دانیم غریبه چه قصدی دارد. در را باز نمی‌کنیم و فوری به پدر، مادر یا یک بزرگتر مطمئن خبر می‌دهیم."},
+    {t:"mc",q:"ترس از باختن در یک مسابقه‌ی دوستانه",o:["ترس بجا","ترس نابجا"],a:1,h:"ترس نابجا است. در مسابقه گاهی برنده و گاهی بازنده می‌شویم و هر دو عادی است. مهم این است که تلاش کنیم و از بازی لذت ببریم."},
+    {t:"mc",q:"ترس از بازی کردن با پریز برق",o:["ترس بجا","ترس نابجا"],a:0,h:"ترس بجا است. برق از پریز می‌تواند ما را بگیرد و خیلی خطرناک است. هیچ‌وقت چیزی داخل پریز نمی‌کنیم و به آن دست نمی‌زنیم."},
+    {t:"mc",q:"ترس از ماسک خنده‌دار دوستت در جشن تولد",o:["ترس بجا","ترس نابجا"],a:1,h:"ترس نابجا است. زیر ماسک همان دوست خودت است و فقط می‌خواهد بازی و شوخی کند. اگر ماسک را برداشت، می‌بینی که چیزی نیست."},
+    {t:"mc",q:"ترس از ایستادن زیر درخت بلند وقتی رعد و برق شدید است",o:["ترس بجا","ترس نابجا"],a:0,h:"ترس بجا است. صاعقه معمولاً به جاهای بلند می‌خورد و زیر درخت بلند ایستادن خطرناک است. به داخل ساختمان یا ماشین می‌رویم."},
+    {t:"mc",q:"ترس از پرسیدن راه از مأمور پلیس وقتی گم شده‌ای",o:["ترس بجا","ترس نابجا"],a:1,h:"ترس نابجا است. پلیس کارش کمک به مردم است. وقتی گم می‌شویم، بهترین کار این است که از پلیس یا یک مأمور مطمئن کمک بخواهیم."},
+    {t:"mc",q:"ترس از سوار شدن به ماشین راننده‌ای که خیلی تند و بی‌احتیاط می‌راند",o:["ترس بجا","ترس نابجا"],a:0,h:"ترس بجا است. سرعت زیاد و بی‌احتیاطی خطر تصادف را بالا می‌برد. می‌توانیم از راننده بخواهیم آرام‌تر برود و همیشه کمربند ایمنی ببندیم."}
+];
+
+let isCustomMode=false,pQs=null,pDrop=null;
+try{if(window.parent&&window.parent.isCustomMode){isCustomMode=window.parent.isCustomMode;pQs=window.parent.generatedQs;pDrop=window.parent.generatedDrop}}catch(e){}
+
+// افزایش 2.5 درصدی سایز سفینه نسبت به نسخه قبل (از 0.665 به 0.6825)
+function drawSpaceship(ctx,x,y,colorBase,isPlayer=false,isEnemy=false){
+    ctx.save();
+    ctx.translate(x,y);
+    if(isEnemy)ctx.rotate(Math.PI);
+    ctx.scale(0.6825,0.6825);
+    let thrustColor=isPlayer?"#00E5FF":"#FF1744";
+    ctx.fillStyle=thrustColor;
+    ctx.beginPath();ctx.moveTo(-10,30);ctx.lineTo(0,45+(Math.random()*15));ctx.lineTo(10,30);ctx.fill();
+    let wingGrad=ctx.createLinearGradient(-40,0,40,0);
+    wingGrad.addColorStop(0,"#222");wingGrad.addColorStop(0.5,colorBase);wingGrad.addColorStop(1,"#222");
+    ctx.fillStyle=wingGrad;
+    ctx.beginPath();ctx.moveTo(0,-25);ctx.lineTo(45,25);ctx.lineTo(45,35);ctx.lineTo(0,15);ctx.lineTo(-45,35);ctx.lineTo(-45,25);ctx.fill();
+    let bodyGrad=ctx.createLinearGradient(-18,0,18,0);
+    bodyGrad.addColorStop(0,"#111");bodyGrad.addColorStop(0.3,colorBase);bodyGrad.addColorStop(0.7,colorBase);bodyGrad.addColorStop(1,"#111");
+    ctx.fillStyle=bodyGrad;
+    ctx.beginPath();ctx.ellipse(0,5,18,35,0,0,Math.PI*2);ctx.fill();
+    let cockpitGrad=ctx.createLinearGradient(-8,-10,8,-10);
+    cockpitGrad.addColorStop(0,"#000");cockpitGrad.addColorStop(0.5,"#AADDFF");cockpitGrad.addColorStop(1,"#000");
+    ctx.fillStyle=cockpitGrad;
+    ctx.beginPath();ctx.ellipse(0,-5,8,15,0,0,Math.PI*2);ctx.fill();
+    ctx.restore();
+}
+
+// افزایش 2.5 درصدی سایز تانک/سفینه بیگانه نسبت به نسخه قبل (از 0.57 به 0.585)
+function drawAlienShip(ctx,x,y,hp,scale=0.585){
+    ctx.save();
+    ctx.translate(x,y);
+    ctx.rotate(Math.PI);
+    ctx.scale(scale,scale);
+    let ringGrad=ctx.createLinearGradient(-55,0,55,0);
+    ringGrad.addColorStop(0,"#31004A");ringGrad.addColorStop(0.5,"#D500F9");ringGrad.addColorStop(1,"#31004A");
+    ctx.fillStyle=ringGrad;
+    ctx.beginPath();ctx.ellipse(0,10,55,25,0,0,Math.PI*2);ctx.fill();
+    let domeGrad=ctx.createLinearGradient(-30,-5,30,-5);
+    domeGrad.addColorStop(0,"#002200");domeGrad.addColorStop(0.5,"#00E676");domeGrad.addColorStop(1,"#002200");
+    ctx.fillStyle=domeGrad;
+    ctx.beginPath();ctx.ellipse(0,-5,30,20,0,0,Math.PI*2);ctx.fill();
+    let barrelGrad=ctx.createLinearGradient(-10,0,10,0);
+    barrelGrad.addColorStop(0,"#880E4F");barrelGrad.addColorStop(1,"#FF1744");
+    ctx.fillStyle=barrelGrad;
+    ctx.fillRect(-10,-70,20,50);
+    ctx.fillStyle="#FFEA00";
+    ctx.beginPath();ctx.arc(0,-5,8,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle="#000";
+    ctx.beginPath();ctx.arc(0,-5,3,0,Math.PI*2);ctx.fill();
+    if(hp<=5&&scale>1){
+        ctx.fillStyle="rgba(255, 0, 0, 0.4)";
+        ctx.beginPath();ctx.arc(0,0,50,0,Math.PI*2);ctx.fill();
+    }
+    ctx.restore();
+}
+
+function drawPowerupIcon(ctx,x,y,type){
+    ctx.save();
+    ctx.translate(x,y);
+    ctx.scale(0.7125,0.7125);
+    let glowColor;
+    if(type==='repair')glowColor="#00E676";
+    else if(type==='ammo')glowColor="#00B0FF";
+    else if(type==='turbo')glowColor="#FFEA00";
+    else if(type==='shield')glowColor="#FF9100";
+    ctx.fillStyle="rgba(10,15,25,0.9)";
+    ctx.strokeStyle=glowColor;
+    ctx.lineWidth=4;
+    ctx.beginPath();ctx.moveTo(0,-25);ctx.lineTo(25,0);ctx.lineTo(0,25);ctx.lineTo(-25,0);ctx.closePath();ctx.fill();ctx.stroke();
+    if(type==='repair'){
+        ctx.fillStyle=glowColor;
+        ctx.beginPath();ctx.moveTo(0,8);ctx.bezierCurveTo(-10,-2,-20,-8,-10,-15);ctx.bezierCurveTo(-2,-20,0,-10,0,-10);ctx.bezierCurveTo(0,-10,2,-20,10,-15);ctx.bezierCurveTo(20,-8,10,-2,0,8);ctx.fill();
+    }else if(type==='ammo'){
+        ctx.fillStyle=glowColor;
+        ctx.beginPath();ctx.roundRect(-6,-10,12,18,2);ctx.fill();
+        ctx.fillStyle="#FFF";
+        ctx.beginPath();ctx.moveTo(-6,-10);ctx.lineTo(0,-16);ctx.lineTo(6,-10);ctx.fill();
+    }else if(type==='turbo'){
+        ctx.fillStyle=glowColor;
+        ctx.beginPath();ctx.moveTo(4,-14);ctx.lineTo(-10,2);ctx.lineTo(0,2);ctx.lineTo(-4,14);ctx.lineTo(10,-2);ctx.lineTo(0,-2);ctx.closePath();ctx.fill();
+    }else if(type==='shield'){
+        ctx.fillStyle=glowColor;
+        ctx.beginPath();ctx.moveTo(0,-15);ctx.lineTo(12,-8);ctx.lineTo(12,5);ctx.lineTo(0,15);ctx.lineTo(-12,5);ctx.lineTo(-12,-8);ctx.closePath();ctx.fill();
+        ctx.fillStyle="#FFF";
+        ctx.beginPath();ctx.moveTo(0,-10);ctx.lineTo(8,-5);ctx.lineTo(8,3);ctx.lineTo(0,10);ctx.lineTo(-8,3);ctx.lineTo(-8,-5);ctx.closePath();ctx.fill();
+    }
+    ctx.restore();
+}
+
+const player={
+    lane:1,currentX:0,y:0,turboTimer:0,shieldTimer:0,
+    draw(){
+        updatePlayerYPosition();
+        let targetX=15+(this.lane*laneWidth)+(laneWidth/2);
+        this.currentX+=(targetX-this.currentX)*0.3;
+        let finalX=(this.currentX+getCurveOffset(this.y))|0;
+        let py=this.y|0;
+        let spr=getCachedSprite('player',cx=>drawSpaceship(cx,0,0,"#0066FF",true,false));
+        ctx.drawImage(spr,finalX-100,py-100);
+        if(this.shieldTimer>0){
+            ctx.strokeStyle="rgba(0, 230, 118, 0.9)";
+            ctx.lineWidth=4;
+            ctx.beginPath();ctx.ellipse(finalX,py,44,58,0,0,Math.PI*2);ctx.stroke();
+            ctx.fillStyle="rgba(0, 230, 118, 0.2)";ctx.fill();
+        }
+    }
+};
+resize();
+
+let enemies=[],bullets=[],powerups=[];
+
+function startGame(){
+    if(window.parent&&typeof window.parent.stopHubMusic==='function'){window.parent.stopHubMusic()}
+    isPaused=true;
+    isManualPaused=false;
+    hasGameStarted=true;
+    try{initMediaFiles()}catch(e){}
+    try{initTriviaPool()}catch(e){}
+    if(pilotImgSrc){
+        document.getElementById('hud-pilot-img').src=pilotImgSrc;
+        document.getElementById('hud-pilot-img').style.display='inline-block';
+        document.getElementById('hud-pilot-icon').style.display='none';
+    }
+    document.getElementById('guideModal').style.display='none';
+    if(!isMuted&&bgMusic){
+        bgMusic.play().catch(e=>console.log(e));
+    }
+    document.getElementById('hud').style.display='flex';
+    showLevelBanner("سطح ۱");
+    document.getElementById('controls').style.display='flex';
+    updatePlayerYPosition();
+    updateHUD();
+
+    let cdModal=document.getElementById('countdownModal');
+    let cdText=document.getElementById('countdownText');
+    document.getElementById('encouragementText').style.display='none';
+    cdModal.style.background='rgba(0,0,0,0.2)';
+    cdModal.style.display='flex';
+    let count=5;
+    cdText.innerText=count;
+    if(countdownInterval) clearInterval(countdownInterval);
+    countdownInterval=setInterval(()=>{
+        count--;
+        if(count>0) cdText.innerText=count;
+        else{
+            clearInterval(countdownInterval);
+            countdownInterval=null;
+            cdModal.style.display='none';
+            isPaused=false;
+            if(!isMuted&&bgMusic&&bgMusic.paused){
+                bgMusic.play().catch(e=>console.log(e));
+            }
+        }
+    },1000);
+
+    if(!gameInterval){
+        gameInterval=setInterval(()=>{
+            if(!isPaused){
+                time++;
+                if(time>0&&time%30===0){
+                    if(level<MAX_LEVEL||isEndlessMode){
+                        level++;
+                        gameSpeed*=1.05;
+                        difficultyMultiplier+=0.2;
+                        showLevelBanner("سطح "+level);
+                        if(level===3||level===6||level===9||level===10||(level>10&&(level-10)%3===0)){
+                            startBossMode();
+                        }
+                    }
+                }
+                if(!isBossMode){
+                    let cycleTime=time%60;
+                    if(cycleTime===0){targetCurveMagnitude=0;targetLanes=3}
+                    else if(cycleTime===40){targetLanes=[2,3,4][Math.floor(Math.random()*3)];curveDirection=(Math.random()>0.5?1:-1);targetCurveMagnitude=0.3+Math.random()*0.4}
+                }
+            }
+        },1000);
+    }
+    if(!gameLoopId) loop();
+}
+
+function startBossMode(){
+    isBossMode=true;
+    preBossGameSpeed=gameSpeed;
+    targetLanes=5;
+    targetCurveMagnitude=0;
+    let bossHealth=20+(level>10?(level-10)*2:0);
+    boss={hp:bossHealth,maxHp:bossHealth,y:-150,xOffset:0,direction:1,lastShot5:time,lastShot10:time,lastShot8:time,lastMinionSpawn:time};
+    document.getElementById('bossHpBar').style.display='block';
+    document.getElementById('bossHpFill').style.width='100%';
+    enemies=[];
+    if(!isMuted&&tankAudio&&tankAudio.paused)tankAudio.play().catch(e=>console.log(e));
+}
+
+function continueEndless(){
+    document.getElementById('level10Modal').style.display='none';
+    isEndlessMode=true;
+    isPaused=false;
+    if(!isMuted&&bgMusic)bgMusic.play().catch(e=>console.log(e));
+}
+
+function showFinalReport(){
+    document.getElementById('level10Modal').style.display='none';
+    showVictoryScreen(true);
+}
+
+function showVictoryScreen(isFromLevel10=false){
+    isPaused=true;
+    if(bgMusic)bgMusic.pause();
+    if(tankAudio)tankAudio.pause();
+    if(turboAudio)turboAudio.pause();
+    document.getElementById('gameOverTitle').innerText="🎉 فاتح کهکشان! کارنامه پرواز";
+    document.getElementById('gameOverTitle').style.color="var(--success)";
+    document.getElementById('finalName').innerText=playerName;
+    document.getElementById('finalLevel').innerText=level;
+    document.getElementById('finalScore').innerText=score;
+    document.getElementById('finalTime').innerText=time;
+    document.getElementById('finalDist').innerText=(distance/100).toFixed(1);
+    document.getElementById('finalSpeed').innerText=maxSpeedReached;
+    document.getElementById('finalCorrect').innerText=correctAnswers;
+    document.getElementById('finalIncorrect').innerText=incorrectAnswers;
+    document.getElementById('btnRevive').style.display='none';
+    if(isFromLevel10){
+        document.getElementById('gameoverMotiv').innerText=`تو یک قهرمان واقعی هستی ${playerName}! 🌟 تمام ناوگان دشمن نابود شدند.`;
+    }else{
+        document.getElementById('gameoverMotiv').innerText=`رکورد فوق‌العاده‌ای ثبت کردی فرمانده ${playerName}! 🌟`;
+    }
+    generateConfetti();
+    document.getElementById('gameOverModal').style.display='flex';
+}
+
+function loop(){
+    if(!isPaused)update();
+    draw();
+    gameLoopId=requestAnimationFrame(loop);
+}
+
+function update(){
+    frames++;
+    globalCurve=Math.sin(distance*0.003*curveDirection)*(width*currentCurveMagnitude);
+    if(shakeTime>0)shakeTime--;
+    currentLanes+=(targetLanes-currentLanes)*0.05;
+    currentCurveMagnitude+=(targetCurveMagnitude-currentCurveMagnitude)*0.05;
+    laneWidth=roadWidth/currentLanes;
+    let maxLaneIndex=Math.round(currentLanes)-1;
+    if(player.lane>maxLaneIndex)player.lane=maxLaneIndex;
+    enemies.forEach(e=>{if(e.lane>maxLaneIndex)e.lane=maxLaneIndex});
+    powerups.forEach(p=>{if(p.lane>maxLaneIndex)p.lane=maxLaneIndex});
+    if(isBossMode){gameSpeed-=0.05;if(gameSpeed<3)gameSpeed=3}
+    let speedMultiplier=player.turboTimer>0?1.5:1;
+    let currentSpeed=gameSpeed*speedMultiplier;
+    let currentSpeedPerc=Math.floor((gameSpeed/initialGameSpeed)*100);
+    if(currentSpeedPerc>maxSpeedReached)maxSpeedReached=currentSpeedPerc;
+    distance+=(currentSpeed/10);
+    if(player.turboTimer>0){
+        player.turboTimer--;
+        if(player.turboTimer===0&&turboAudio){turboAudio.pause();turboAudio.currentTime=0}
+    }
+    if(player.shieldTimer>0)player.shieldTimer--;
+    roadOffset+=currentSpeed;
+    if(roadOffset>150)roadOffset=0;
+
+    let isPowerupFrame=(time>0&&(time%15===0||time%5===0||time%10===0));
+    if(isPowerupFrame){
+        let occupiedLanes=powerups.filter(p=>p.y<200).map(p=>p.lane);
+        let availableLanes=[];
+        let cLanes=Math.round(currentLanes);
+        for(let i=0;i<cLanes;i++)if(!occupiedLanes.includes(i))availableLanes.push(i);
+        if(time%15===0&&time!==lastShieldTime){
+            lastShieldTime=time;
+            if(availableLanes.length>0){let lane=availableLanes.splice(Math.floor(Math.random()*availableLanes.length),1)[0];powerups.push({lane:lane,y:-250,type:'shield'})}
+        }
+        if(time%5===0&&time!==lastRepairTime){
+            lastRepairTime=time;
+            if(availableLanes.length>0){let lane=availableLanes.splice(Math.floor(Math.random()*availableLanes.length),1)[0];powerups.push({lane:lane,y:-250,type:'repair'})}
+        }
+        if(time>120&&time%10===0&&time!==lastTurboTime&&!isBossMode){
+            lastTurboTime=time;
+            if(availableLanes.length>0){let lane=availableLanes.splice(Math.floor(Math.random()*availableLanes.length),1)[0];powerups.push({lane:lane,y:-250,type:'turbo'})}
+        }
+        if(time%5===0&&time!==lastAmmoTime){
+            lastAmmoTime=time;
+            if(availableLanes.length>0){let lane=availableLanes.splice(Math.floor(Math.random()*availableLanes.length),1)[0];powerups.push({lane:lane,y:-250,type:'ammo'})}
+        }
+    }
+
+    let isSpawnFrame=(!isBossMode&&frames%Math.max(25,Math.floor(70-difficultyMultiplier*10))===0);
+    if(isSpawnFrame){
+        let isTank=Math.random()>0.8&&difficultyMultiplier>1.2;
+        let safeLanes=Array.from({length:Math.round(currentLanes)},(_,i)=>i);
+        if(!isTank){
+            let tankLanes=enemies.filter(e=>e.type==='tank').map(e=>e.lane);
+            safeLanes=safeLanes.filter(l=>!tankLanes.includes(l));
+        }
+        let occupiedLanesNearTop=enemies.filter(e=>e.y>-250&&e.y<100).map(e=>e.lane);
+        let uniqueOccupied=[...new Set(occupiedLanesNearTop)];
+        if(uniqueOccupied.length<Math.round(currentLanes)-1){
+            safeLanes=safeLanes.filter(l=>!occupiedLanesNearTop.includes(l));
+            if(safeLanes.length>0){
+                let lane=safeLanes[Math.floor(Math.random()*safeLanes.length)];
+                enemies.push({lane:lane,y:-250,type:isTank?'tank':'car',speed:isTank?gameSpeed*0.6:gameSpeed*0.9,hp:1});
+            }
+        }
+    }
+
+    bullets.forEach((b,index)=>{b.y-=20;if(b.y<-50)bullets.splice(index,1)});
+    let playerLogicalX=player.currentX;
+
+    if(isBossMode&&boss){
+        boss.y+=(150-boss.y)*0.05;
+        boss.xOffset+=boss.direction*1.5;
+        let maxOffset=laneWidth*1.5;
+        if(boss.xOffset>maxOffset){boss.xOffset=maxOffset;boss.direction=-1}
+        else if(boss.xOffset<-maxOffset){boss.xOffset=-maxOffset;boss.direction=1}
+        let bossX=width/2+boss.xOffset;
+        if(time-boss.lastShot5>=5){
+            boss.lastShot5=time;playSfx('enemyShoot');
+            let dx=playerLogicalX-bossX;let dy=player.y-(boss.y+60);
+            let dist=Math.hypot(dx,dy)||1;let speed=6;
+            bossBullets.push({x:bossX,y:boss.y+60,vx:(dx/dist)*speed,vy:(dy/dist)*speed});
+        }
+        if(time-boss.lastShot10>=10){
+            boss.lastShot10=time;playSfx('enemyShoot');
+            const vxValues=[-2,-0.6,0.6,2];
+            vxValues.forEach(vx=>{bossBullets.push({x:bossX,y:boss.y+60,vx:vx*1.5,vy:5})});
+        }
+        if(level>=9&&time-boss.lastShot8>=8){
+            boss.lastShot8=time;playSfx('enemyShoot');
+            let dx=playerLogicalX-bossX;let dy=player.y-(boss.y+60);
+            let dist=Math.hypot(dx,dy)||1;let speed=6;
+            for(let i=0;i<4;i++){
+                let offsetX=(i-1.5)*30;
+                bossBullets.push({x:bossX+offsetX,y:boss.y+60,vx:(dx/dist)*speed,vy:(dy/dist)*speed});
+            }
+        }
+        if(level>=9&&time-boss.lastMinionSpawn>=10){
+            boss.lastMinionSpawn=time;
+            let minionTypes=['car','car','car','tank','tank'].sort(()=>Math.random()-0.5);
+            let safeLanes=Array.from({length:Math.round(currentLanes)},(_,i)=>i);
+            for(let i=0;i<minionTypes.length;i++){
+                let lane=safeLanes[Math.floor(Math.random()*safeLanes.length)];
+                enemies.push({lane:lane,y:-250-(i*120),type:minionTypes[i],speed:minionTypes[i]==='tank'?gameSpeed*0.6:gameSpeed*0.9,hp:1});
+            }
+        }
+        bullets.forEach((b,bIndex)=>{
+            let bLogicalX=15+(b.lane*laneWidth)+(laneWidth/2);
+            if(b.y<boss.y+80&&Math.abs(bLogicalX-bossX)<100){
+                boss.hp--;
+                bullets.splice(bIndex,1);
+                createExplosion(bLogicalX+getCurveOffset(b.y),b.y,"#D500F9",5);
+                triggerShake(3);
+                document.getElementById('bossHpFill').style.width=(boss.hp/boss.maxHp*100)+'%';
+                if(boss.hp<=0){
+                    playSfx('crash');playExplosionSound();
+                    if(tankAudio) tankAudio.pause();
+                    createBossExplosion(bossX+getCurveOffset(boss.y),boss.y);
+                    setTimeout(()=>addFloatingText(bossX+getCurveOffset(boss.y),boss.y,'+200','#FFEA00'),2000);
+                    flashAlpha=1.0;isBossMode=false;score+=(level>10?200:100);bossBasesDestroyed++;
+                    document.getElementById('bossHpBar').style.display='none';
+                    gameSpeed=preBossGameSpeed;bossBullets=[];isPaused=true;
+                    if(level===MAX_LEVEL&&!isEndlessMode){
+                        let msg=`تبریک ${playerName}! تمام ناوگان دشمن نابود شدند!`;
+                        document.getElementById('msgBoxText').innerText=msg;
+                        document.getElementById('messageModal').style.display='flex';
+                        setTimeout(()=>{document.getElementById('messageModal').style.display='none';document.getElementById('level10Modal').style.display='flex'},4000);
+                    }else{
+                        let msg="";
+                        if(level<MAX_LEVEL){msg=bossBasesDestroyed===1?"اولین ناوگان دشمن نابود شد، دو تای دیگه مونده!":"یک ناوگان دیگر نابود شد!"}
+                        else{msg="یک غول فضایی دیگر نابود شد! به پیشروی ادامه بده! 🚀"}
+                        document.getElementById('msgBoxText').innerText=msg;
+                        document.getElementById('messageModal').style.display='flex';
+                        setTimeout(()=>{document.getElementById('messageModal').style.display='none';isPaused=false},4000);
+                    }
+                }
+            }
+        });
+    }
+
+    bossBullets.forEach((bb,bbIndex)=>{
+        bb.x+=bb.vx;
+        bb.y+=bb.vy+(speedMultiplier===1.5?gameSpeed*0.5:0);
+        if(bb.y>height+50){bossBullets.splice(bbIndex,1)}
+        else{
+            if(Math.abs(bb.y-player.y)<40&&Math.abs(bb.x-playerLogicalX)<30){
+                bossBullets.splice(bbIndex,1);
+                if(player.shieldTimer>0){playSfx('crash');createExplosion(bb.x+getCurveOffset(bb.y),bb.y,"#00E676",10)}
+                else{loseLife()}
+            }
+        }
+    });
+
+    enemies.forEach((e,eIndex)=>{
+        e.y+=e.speed+(speedMultiplier===1.5?gameSpeed:0);
+        let eLogicalX=15+(e.lane*laneWidth)+(laneWidth/2);
+        let screenX=eLogicalX+getCurveOffset(e.y);
+        bullets.forEach((b,bIndex)=>{
+            let bLogicalX=15+(b.lane*laneWidth)+(laneWidth/2);
+            if(Math.abs(bLogicalX-eLogicalX)<40&&Math.abs(b.y-e.y)<30){
+                e.hp--;bullets.splice(bIndex,1);
+                if(e.hp<=0){
+                    playSfx('crash');playExplosionSound();
+                    if(e.type==='tank'){
+                        createSmallTankExplosion(screenX,e.y);
+                        let earned=20;score+=earned;
+                        setTimeout(()=>addFloatingText(screenX,e.y,`+${earned}`,'#00E5FF'),1500);
+                    }else{
+                        createExplosion(screenX,e.y,"#D50000",35);
+                        triggerShake(2);
+                        let earned=10;addFloatingText(screenX,e.y,`+${earned}`,'#00E5FF');score+=earned;
+                    }
+                    enemies.splice(eIndex,1);
+                }
+            }
+        });
+        if(Math.abs(e.y-player.y)<63&&Math.abs(eLogicalX-playerLogicalX)<44){
+            if(player.shieldTimer>0){
+                playSfx('crash');playExplosionSound();
+                if(e.type==='tank'){
+                    createSmallTankExplosion(screenX,e.y);
+                    setTimeout(()=>addFloatingText(screenX,e.y,`+20`,'#00E5FF'),1500);score+=20;
+                }else{
+                    createExplosion(screenX,e.y,"#D50000",35);
+                    triggerShake(2);addFloatingText(screenX,e.y,`+10`,'#00E5FF');score+=10;
+                }
+                enemies.splice(eIndex,1);
+            }else{
+                enemies.splice(eIndex,1);loseLife();
+            }
+        }
+        if(e.y>height+50)enemies.splice(eIndex,1);
+    });
+
+    powerups.forEach((p,pIndex)=>{
+        p.y+=currentSpeed*0.8;
+        let pLogicalX=15+(p.lane*laneWidth)+(laneWidth/2);
+        if(Math.abs(p.y-player.y)<58&&Math.abs(pLogicalX-playerLogicalX)<44){
+            playSfx('powerup');
+            powerups.splice(pIndex,1);
+            if(p.type==='turbo'){
+                player.turboTimer=300;
+                addFloatingText(playerLogicalX+getCurveOffset(player.y),player.y,"جهش نوری!","#FFEA00");
+                if(!isMuted&&turboAudio){turboAudio.currentTime=0;turboAudio.play().catch(e=>console.log(e))}
+            }else if(p.type==='shield'){
+                player.shieldTimer=300;
+                addFloatingText(playerLogicalX+getCurveOffset(player.y),player.y,"سپر روشن!","#00E676");
+            }else{
+                activePowerup=p.type;
+                triggerTrivia();
+            }
+        }
+        if(p.y>height+50)powerups.splice(pIndex,1);
+    });
+    updateHUD();
+}
+
+function draw(){
+    ctx.save();
+    if(shakeTime>0){
+        let dx=(Math.random()-0.5)*15;
+        let dy=(Math.random()-0.5)*15;
+        ctx.translate(dx,dy);
+    }
+    ctx.clearRect(-20,-20,width+40,height+40);
+    ctx.fillStyle="rgba(5, 10, 20, 0.15)";
+    ctx.fillRect(-20,-20,width+40,height+40);
+
+    if(!offscreenCache['bgNebula']){
+        let c=document.createElement('canvas');c.width=width;c.height=height;
+        let cx=c.getContext('2d');
+        backgroundNebulas.forEach(n=>{
+            let grad=cx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.radius);
+            grad.addColorStop(0,n.color);grad.addColorStop(1,"transparent");
+            cx.fillStyle=grad;cx.beginPath();cx.arc(n.x,n.y,n.radius,0,Math.PI*2);cx.fill();
+        });
+        offscreenCache['bgNebula']=c;
+    }
+    ctx.drawImage(offscreenCache['bgNebula'],-20,-20);
+
+    ctx.fillStyle="#FFF";
+    backgroundStars.forEach(s=>{
+        let speedMult=(player.turboTimer>0)?4:1;
+        let currentSpeed=s.speed*(gameSpeed/5)*s.layer*speedMult;
+        s.y+=currentSpeed;
+        if(s.y>height){s.y=0;s.x=Math.random()*width}
+        ctx.globalAlpha=s.opacity;
+        let stretch=currentSpeed*1.5;
+        ctx.strokeStyle=`rgba(255, 255, 255, ${s.opacity})`;
+        ctx.lineWidth=s.size;
+        ctx.beginPath();ctx.moveTo(s.x,s.y);ctx.lineTo(s.x,s.y-stretch);ctx.stroke();
+    });
+    ctx.globalAlpha=1.0;
+
+    ctx.fillStyle="rgba(10, 5, 25, 0.7)";
+    ctx.beginPath();
+    for(let y=height+50;y>=-250;y-=60){ctx.lineTo(15+getCurveOffset(y),y)}
+    for(let y=-250;y<=height+50;y+=60){ctx.lineTo(width-15+getCurveOffset(y),y)}
+    ctx.fill();
+
+    ctx.lineWidth=3;
+    ctx.setLineDash([30,30]);
+    ctx.lineDashOffset=-roadOffset;
+    for(let i=1;i<Math.ceil(currentLanes);i++){
+        let xPos=15+(i*laneWidth);
+        let opacity=0.5;
+        if(i>currentLanes-1){
+            opacity=0.5*(currentLanes%1);
+            if(opacity===0&&currentLanes%1!==0)opacity=0.5;
+        }
+        ctx.strokeStyle=`rgba(0, 229, 255, ${opacity*0.3})`;
+        ctx.lineWidth=8;
+        ctx.beginPath();for(let y=-250;y<=height+50;y+=60)ctx.lineTo(xPos+getCurveOffset(y),y);ctx.stroke();
+        ctx.strokeStyle=`rgba(0, 229, 255, ${opacity})`;
+        ctx.lineWidth=3;
+        ctx.beginPath();for(let y=-250;y<=height+50;y+=60)ctx.lineTo(xPos+getCurveOffset(y),y);ctx.stroke();
+    }
+    ctx.setLineDash([]);
+    ctx.lineDashOffset=0;
+
+    ctx.strokeStyle="rgba(213, 0, 249, 0.3)";
+    ctx.lineWidth=10;
+    ctx.beginPath();for(let y=-250;y<=height+50;y+=60)ctx.lineTo(17+getCurveOffset(y),y);ctx.stroke();
+    ctx.beginPath();for(let y=-250;y<=height+50;y+=60)ctx.lineTo(width-17+getCurveOffset(y),y);ctx.stroke();
+
+    ctx.strokeStyle="#D500F9";
+    ctx.lineWidth=4;
+    ctx.beginPath();for(let y=-250;y<=height+50;y+=60)ctx.lineTo(17+getCurveOffset(y),y);ctx.stroke();
+    ctx.beginPath();for(let y=-250;y<=height+50;y+=60)ctx.lineTo(width-17+getCurveOffset(y),y);ctx.stroke();
+
+    // افزایش 2.5 درصدی سایز غول مرحله آخر نسبت به نسخه قبل (از 1.14 به 1.17)
+    if(isBossMode&&boss){
+        let x=(width/2+boss.xOffset+getCurveOffset(boss.y))|0;
+        let y=boss.y|0;
+        let bKey=boss.hp<=5?'boss_low':'boss';
+        let spr=getCachedSprite(bKey,cx=>drawAlienShip(cx,0,0,boss.hp<=5?5:20,1.17));
+        ctx.drawImage(spr,x-100,y-100);
+    }
+
+    bossBullets.forEach(bb=>{
+        let bx=bb.x+getCurveOffset(bb.y);
+        let by=bb.y;
+        ctx.fillStyle="rgba(255, 23, 68, 0.5)";
+        ctx.beginPath();ctx.arc(bx,by,15,0,Math.PI*2);ctx.fill();
+        ctx.fillStyle="#FF1744";
+        ctx.beginPath();ctx.arc(bx,by,9.5,0,Math.PI*2);ctx.fill();
+        ctx.fillStyle="#FFF";
+        ctx.beginPath();ctx.arc(bx,by,3.8,0,Math.PI*2);ctx.fill();
+    });
+
+    bullets.forEach(b=>{
+        let bx=15+(b.lane*laneWidth)+(laneWidth/2)+getCurveOffset(b.y);
+        ctx.fillStyle="rgba(0, 255, 255, 0.4)";
+        ctx.beginPath();ctx.roundRect(bx-6,b.y-20,12,40,6);ctx.fill();
+        ctx.fillStyle="#00FFFF";
+        ctx.beginPath();ctx.roundRect(bx-3,b.y-18,6,36,3);ctx.fill();
+        ctx.fillStyle="#FFF";
+        ctx.beginPath();ctx.roundRect(bx-1,b.y-15,2,30,1);ctx.fill();
+    });
+
+    powerups.forEach(p=>{
+        let x=(15+(p.lane*laneWidth)+(laneWidth/2)+getCurveOffset(p.y))|0;
+        let y=p.y|0;
+        let spr=getCachedSprite('p_'+p.type,cx=>drawPowerupIcon(cx,0,0,p.type));
+        ctx.drawImage(spr,x-100,y-100);
+    });
+
+    enemies.forEach(e=>{
+        let x=(15+(e.lane*laneWidth)+(laneWidth/2)+getCurveOffset(e.y))|0;
+        let y=e.y|0;
+        if(e.type==='tank'){
+            let spr=getCachedSprite('tank',cx=>drawAlienShip(cx,0,0,1,0.585));
+            ctx.drawImage(spr,x-100,y-100);
+        }else{
+            let spr=getCachedSprite('enemy',cx=>drawSpaceship(cx,0,0,"#D50000",false,true));
+            ctx.drawImage(spr,x-100,y-100);
+        }
+    });
+
+    player.draw();
+
+    particles.forEach((p,index)=>{
+        p.x+=p.vx;p.y+=p.vy;p.life-=(p.decay||0.03);
+        if(p.life<=0){particles.splice(index,1);return}
+        ctx.globalAlpha=p.life>1?1:p.life;
+        ctx.fillStyle=p.color;
+        ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill();
+    });
+    ctx.globalAlpha=1.0;
+
+    floatingTexts.forEach((ft,index)=>{
+        ft.y-=1.5;ft.life-=0.02;
+        if(ft.life<=0){floatingTexts.splice(index,1);return}
+        ctx.globalAlpha=ft.life;
+        ctx.fillStyle=ft.color;
+        ctx.font="900 24px 'BKoodak', Tahoma";
+        ctx.fillText(ft.text,ft.x-15,ft.y);
+    });
+    ctx.globalAlpha=1.0;
+
+    if(flashAlpha>0){
+        ctx.fillStyle=`rgba(255, 255, 255, ${flashAlpha})`;
+        ctx.fillRect(-20,-20,width+40,height+40);
+        flashAlpha-=0.05;
+        if(flashAlpha<0)flashAlpha=0;
+    }
+    ctx.restore();
+}
+
+document.getElementById('btnRight').addEventListener('touchstart',(e)=>{e.preventDefault();moveRight()});
+document.getElementById('btnRight').addEventListener('mousedown',moveRight);
+document.getElementById('btnLeft').addEventListener('touchstart',(e)=>{e.preventDefault();moveLeft()});
+document.getElementById('btnLeft').addEventListener('mousedown',moveLeft);
+
+function moveRight(){if(player.lane<Math.round(currentLanes)-1)player.lane++}
+function moveLeft(){if(player.lane>0)player.lane--}
+
+document.getElementById('btnShoot').addEventListener('touchstart',(e)=>{e.preventDefault();shoot()});
+document.getElementById('btnShoot').addEventListener('mousedown',shoot);
+
+function shoot(){
+    if(isPaused)return;
+    if(ammo>0){
+        if(!isMuted&&shootSoundTemplate){
+            let shootSnd=shootSoundTemplate.cloneNode();
+            shootSnd.volume=0.5;
+            shootSnd.play().catch(e=>console.log(e));
+        }
+        bullets.push({lane:player.lane,y:player.y-25});
+        ammo--;
+        updateHUD();
+    }
+}
+
+window.addEventListener('keydown',(e)=>{
+    if(isPaused||document.getElementById('controls').style.display==='none')return;
+    if(e.key==='ArrowRight'||e.code==='ArrowRight'){e.preventDefault();moveRight()}
+    else if(e.key==='ArrowLeft'||e.code==='ArrowLeft'){e.preventDefault();moveLeft()}
+    else if(e.code==='Space'){e.preventDefault();shoot()}
+});
+
+function loseLife(){
+    playSfx('crash');playExplosionSound();triggerShake(20);flashAlpha=0.8;
+    createExplosion(player.currentX+getCurveOffset(player.y),player.y,"#FF1744",40);
+    lives--;
+    if(lives<=0){
+        isPaused=true;
+        if(bgMusic)bgMusic.pause();
+        if(tankAudio)tankAudio.pause();
+        if(turboAudio)turboAudio.pause();
+        document.getElementById('gameOverTitle').innerText="💥 سفینه‌ات منهدم شد!";
+        document.getElementById('gameOverTitle').style.color="var(--danger)";
+        document.getElementById('finalName').innerText=playerName;
+        document.getElementById('finalLevel').innerText=level;
+        document.getElementById('finalScore').innerText=score;
+        document.getElementById('finalTime').innerText=time;
+        document.getElementById('finalDist').innerText=(distance/100).toFixed(1);
+        document.getElementById('finalSpeed').innerText=maxSpeedReached;
+        document.getElementById('finalCorrect').innerText=correctAnswers;
+        document.getElementById('finalIncorrect').innerText=incorrectAnswers;
+        if(!hasRevived){
+            document.getElementById('btnRevive').style.display='inline-block';
+            document.getElementById('gameoverMotiv').innerText=`شکست مقدمه پیروزیه، دفعه بعد حتما رکورد می‌زنی ${playerName}! 🌟`;
+        }else{
+            document.getElementById('btnRevive').style.display='none';
+            document.getElementById('gameoverMotiv').innerText=`تلاشت عالی بود ${playerName}! دفعه بعد حتما بهتر میشی.`;
+        }
+        setTimeout(()=>{document.getElementById('gameOverModal').style.display='flex'},800);
+    }
+}
+
+function revivePlayer(){
+    hasRevived=true;lives=3;ammo+=5;isPaused=false;
+    document.getElementById('gameOverModal').style.display='none';
+    if(!isMuted&&bgMusic)bgMusic.play().catch(e=>console.log(e));
+    enemies=enemies.filter(e=>e.y<player.y-200);
+    bossBullets=[];
+    player.shieldTimer=150;
+}
+
+function updateHUD(){
+    document.getElementById('timeDisplay').innerText=time;
+    document.getElementById('distDisplay').innerText=(distance/100).toFixed(1);
+    document.getElementById('speedDisplay').innerText=Math.floor((gameSpeed/initialGameSpeed)*100);
+    document.getElementById('scoreDisplay').innerText=score;
+    document.getElementById('ammoDisplay').innerText=ammo;
+    document.getElementById('livesDisplay').innerText="💚".repeat(Math.max(0,lives));
+    document.getElementById('correctDisplay').innerText=correctAnswers;
+}
+
+let triviaTimerInterval,triviaTimeLeft=30,baseTriviaPool=[],availableTriviaPool=[],currentTriviaItem=null;
+
+function initTriviaPool(){
+    baseTriviaPool=[];
+    let qsToLoad=defaultQs;
+    if(isCustomMode&&pQs&&pQs.length>0){qsToLoad=pQs}
+    qsToLoad.forEach(q=>{
+        if(q.t==='mc'){
+            baseTriviaPool.push({type:'mc',qText:q.q,options:[...q.o],correct:q.o[q.a],hint:q.h});
+        }else if(q.t==='tf'){
+            let cText=(q.a==='true'||q.a===true)?"درست ✅":"نادرست ❌";
+            baseTriviaPool.push({type:'tf',qText:q.q,options:["درست ✅","نادرست ❌"],correct:cText,hint:q.h});
+        }else if(q.t==='bl'){
+            baseTriviaPool.push({type:'bl',qText:q.q,correctArray:q.a,needsDistractors:true,hint:q.h});
+        }else if(q.t==='de'){
+            baseTriviaPool.push({type:'de',qText:q.q,keywordArray:q.k,needsDistractors:true,hint:q.h});
+        }
+    });
+    let dropOpts=[];
+    if(isCustomMode&&pDrop&&pDrop.length>0){
+        dropOpts=pDrop.map(d=>d.b);
+        pDrop.forEach(d=>{baseTriviaPool.push({type:'dd',qText:d.a,correct:d.b,allOpts:dropOpts})});
+    }
+    availableTriviaPool=[...baseTriviaPool];
+}
+
+function triggerTrivia(){
+    isPaused=true;
+    isManualPaused=false;
+    document.getElementById('pauseBtn').innerText='⏸️';
+    if(tankAudio&&!tankAudio.paused)tankAudio.pause();
+    if(turboAudio&&!turboAudio.paused)turboAudio.pause();
+    if(availableTriviaPool.length===0)availableTriviaPool=[...baseTriviaPool];
+    let randomIndex=Math.floor(Math.random()*availableTriviaPool.length);
+    currentTriviaItem=availableTriviaPool.splice(randomIndex,1)[0];
+    document.getElementById('questionWord').innerText=currentTriviaItem.qText;
+    const optionsContainer=document.getElementById('optionsContainer');
+    optionsContainer.innerHTML='';
+
+    if(currentTriviaItem.type==='mc'||currentTriviaItem.type==='tf'){
+        let displayOptions=[];
+        if(currentTriviaItem.needsDistractors){
+            let distractors=new Set([currentTriviaItem.correct]);
+            let attempts=0;
+            while(distractors.size<4&&attempts<50){
+                attempts++;
+                let randItem=baseTriviaPool[Math.floor(Math.random()*baseTriviaPool.length)];
+                if(randItem&&randItem.correct!==currentTriviaItem.correct)distractors.add(randItem.correct);
+            }
+            if(distractors.size<4){
+                for(let dv of defaultQs){
+                    let fallbackC=(dv.t==='mc')?dv.o[dv.a]:((dv.t==='tf')?(dv.a==='true'?"درست ✅":"نادرست ❌"):(dv.t==='bl'?dv.a[0]:dv.k[0]));
+                    if(fallbackC!==currentTriviaItem.correct){
+                        distractors.add(fallbackC);
+                        if(distractors.size>=4)break;
+                    }
+                }
+            }
+            displayOptions=Array.from(distractors).sort(()=>Math.random()-0.5);
+        }else{
+            displayOptions=[...currentTriviaItem.options];
+            if(currentTriviaItem.type==='mc')displayOptions.sort(()=>Math.random()-0.5);
+        }
+        displayOptions.forEach(opt=>{
+            let btn=document.createElement('button');
+            btn.className='option-btn';
+            btn.innerText=opt;
+            btn.onclick=()=>checkAnswer(opt===currentTriviaItem.correct,false);
+            optionsContainer.appendChild(btn);
+        });
+    }else if(currentTriviaItem.type==='bl'||currentTriviaItem.type==='de'){
+        optionsContainer.innerHTML=`<input type="text" id="triviaTextInput" class="edit-input" style="background:#fff; color:#000;" placeholder="پاسخ را تایپ کنید..."><button class="start-btn" style="width:100%; margin-top:10px;" onclick="window.submitTriviaInput()">ثبت پاسخ ✔️</button>`;
+    }else if(currentTriviaItem.type==='dd'){
+        let optsHTML=currentTriviaItem.allOpts.map(o=>`<option value="${o}">${o}</option>`).join('');
+        optionsContainer.innerHTML=`<select id="triviaSelectInput" class="edit-input" style="background:#fff; color:#000;"><option value="">انتخاب کنید...</option>${optsHTML}</select><button class="start-btn" style="width:100%; margin-top:10px;" onclick="window.submitTriviaSelect()">ثبت پاسخ ✔️</button>`;
+    }
+
+    triviaTimeLeft=30;
+    document.getElementById('triviaTimerFill').style.width='100%';
+    document.getElementById('triviaTimerFill').style.background='#00E676';
+    document.getElementById('questionModal').style.display='flex';
+    clearInterval(triviaTimerInterval);
+    triviaTimerInterval=setInterval(()=>{
+        triviaTimeLeft--;
+        let perc=(triviaTimeLeft/30)*100;
+        document.getElementById('triviaTimerFill').style.width=perc+'%';
+        if(triviaTimeLeft<=10)document.getElementById('triviaTimerFill').style.background='#FF1744';
+        else if(triviaTimeLeft<=20)document.getElementById('triviaTimerFill').style.background='#FFEA00';
+        if(triviaTimeLeft<=0){
+            clearInterval(triviaTimerInterval);
+            checkAnswer(false,true);
+        }
+    },1000);
+}
+
+window.submitTriviaInput=function(){
+    let val=document.getElementById('triviaTextInput').value.trim();
+    if(!val)return;
+    let isC=false;
+    if(currentTriviaItem.type==='bl'){
+        isC=currentTriviaItem.correctArray.some(ans=>isFuzzyMatch(val,ans)||fuzzyContains(val,ans));
+        currentTriviaItem.correct=currentTriviaItem.correctArray[0];
+    }else{
+        isC=currentTriviaItem.keywordArray.some(kw=>fuzzyContains(val,kw));
+        currentTriviaItem.correct=currentTriviaItem.keywordArray[0];
+    }
+    checkAnswer(isC,false);
+};
+
+window.submitTriviaSelect=function(){
+    let val=document.getElementById('triviaSelectInput').value;
+    if(!val)return;
+    checkAnswer(val===currentTriviaItem.correct,false);
+};
+
+function generateConfetti(){
+    const colors=['#00E5FF','#D500F9','#00E676','#FFEA00','#FF1744'];
+    const container=document.getElementById('countdownModal');
+    for(let i=0;i<70;i++){
+        let conf=document.createElement('div');
+        conf.className='confetti';
+        conf.style.left=(40+Math.random()*20)+'vw';
+        conf.style.backgroundColor=colors[Math.floor(Math.random()*colors.length)];
+        conf.style.boxShadow=`0 0 10px ${colors[Math.floor(Math.random()*colors.length)]}`;
+        let tx=(Math.random()-0.5)*600+'px';
+        let ty=-(Math.random()*600+400)+'px';
+        conf.style.setProperty('--tx',tx);
+        conf.style.setProperty('--ty',ty);
+        conf.style.animation=`shootUp ${Math.random()*1.5+1.5}s ease-out forwards`;
+        container.appendChild(conf);
+        setTimeout(()=>conf.remove(),3000);
+    }
+}
+
+function checkAnswer(isCorrect,isTimeout=false){
+    clearInterval(triviaTimerInterval);
+    document.getElementById('questionModal').style.display='none';
+    let feedbackModal=document.getElementById('feedbackModal');
+    let titleEl=document.getElementById('feedbackTitle');
+    let correctEl=document.getElementById('feedbackCorrect');
+    let waitTextEl=document.getElementById('feedbackWaitText');
+    let continueBtnEl=document.getElementById('feedbackContinueBtn');
+    let hintText=currentTriviaItem.hint?currentTriviaItem.hint:"";
+
+    if(isCorrect){
+        correctAnswers++;
+        playSfx('correct');
+        if(!isMuted&&applauseAudio){
+            applauseAudio.currentTime=0;
+            applauseAudio.play().catch(e=>console.log(e));
+            setTimeout(()=>{applauseAudio.pause()},3000);
+        }
+        titleEl.innerText="🎉 آفرین! درست گفتی";
+        titleEl.style.color="var(--success)";
+        correctEl.style.borderColor="var(--success)";
+        correctEl.innerHTML="<span style='color:var(--success);font-weight:bold;'>پاسخ: "+currentTriviaItem.correct+"</span><br><br><span style='color:#fff'>"+hintText+"</span>";
+        if(activePowerup==='ammo'){
+            ammo+=8;
+            addFloatingText(width/2,height/2,"+8 لیزر","#00B0FF");
+        }
+        if(activePowerup==='repair'&&lives<5){
+            lives++;
+            addFloatingText(width/2,height/2,"+1 جان","#00E676");
+        }
+        generateConfetti();
+    }else{
+        incorrectAnswers++;
+        playSfx('wrong');
+        setTimeout(()=>{if(!isMuted&&sighAudio&&hasGameStarted)sighAudio.play().catch(e=>console.log(e))},300);
+        titleEl.innerText="❌ پاسخ اشتباه بود!";
+        titleEl.style.color="var(--danger)";
+        correctEl.style.borderColor="var(--danger)";
+        correctEl.innerHTML="<span style='color:var(--danger);font-weight:bold;'>پاسخ صحیح: "+currentTriviaItem.correct+"</span><br><br><span style='color:#fff'>"+hintText+"</span>";
+    }
+
+    continueBtnEl.style.display='none';
+    waitTextEl.style.display='block';
+    let secLeft = 4;
+    waitTextEl.innerText = `زمان مطالعه نکته آموزشی (${secLeft} ثانیه)...`;
+    feedbackModal.style.display='flex';
+
+    if(feedbackWaitInterval) clearInterval(feedbackWaitInterval);
+    feedbackWaitInterval = setInterval(()=>{
+        secLeft--;
+        if(secLeft > 0){
+            waitTextEl.innerText = `زمان مطالعه نکته آموزشی (${secLeft} ثانیه)...`;
+        } else {
+            clearInterval(feedbackWaitInterval);
+            feedbackWaitInterval = null;
+            waitTextEl.style.display = 'none';
+            continueBtnEl.style.display = 'block';
+        }
+    }, 1000);
+}
+
+function continueAfterFeedback(){
+    if(feedbackWaitInterval){
+        clearInterval(feedbackWaitInterval);
+        feedbackWaitInterval = null;
+    }
+    document.getElementById('feedbackModal').style.display='none';
+    startCountdown();
+}
+
+function startCountdown(){
+    let cdModal=document.getElementById('countdownModal');
+    let cdText=document.getElementById('countdownText');
+    document.getElementById('encouragementText').style.display='none';
+    cdModal.style.display='flex';
+    let count=3;
+    cdText.innerText=count;
+    if(countdownInterval) clearInterval(countdownInterval);
+    countdownInterval=setInterval(()=>{
+        count--;
+        if(count>0){
+            cdText.innerText=count;
+        }else{
+            clearInterval(countdownInterval);
+            countdownInterval=null;
+            cdModal.style.display='none';
+            if(!isMuted&&bgMusic&&bgMusic.paused){
+                bgMusic.play().catch(e=>console.log(e));
+            }
+            if(!isMuted&&player.turboTimer>0&&turboAudio){
+                turboAudio.play().catch(e=>console.log(e));
+            }
+            if(!isMuted&&isBossMode&&tankAudio&&tankAudio.paused){
+                tankAudio.play().catch(e=>console.log(e));
+            }
+            isPaused=false;
+        }
+    },1000);
+}
+</script>
+</body>
+</html>
